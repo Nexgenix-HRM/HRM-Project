@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaClock, FaCalendarDay, FaHistory, FaHourglassHalf } from 'react-icons/fa';
-import { employeeApi } from '../../../api/employeeApi';
+import { employeeApi } from '../../../Api/employeeApi';
 
 const DailyActivity = () => {
     const [activities, setActivities] = useState([]);
@@ -88,11 +88,11 @@ const DailyActivity = () => {
             </header>
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-               
+
                 <div className="xl:col-span-5 space-y-6 sticky top-8">
-            
+
                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-8 md:p-10 relative overflow-hidden group">
-                        
+
                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
 
                         <div className="relative z-10">
@@ -176,7 +176,7 @@ const DailyActivity = () => {
                     </div>
                 </div>
 
-             
+
                 <div className="xl:col-span-7">
                     <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[600px]">
                         <div className="p-8 md:p-10 flex items-center justify-between border-b border-slate-50">
@@ -196,10 +196,10 @@ const DailyActivity = () => {
                         <div className="p-8 md:p-10 space-y-6">
                             {activities.map((activity, index) => (
                                 <div key={activity.id} className="relative pl-12 group">
-                                    
+
                                     <div className="absolute left-[1.35rem] top-0 bottom-0 w-1 bg-slate-50 group-last:bottom-auto group-last:h-4 rounded-full"></div>
 
-                                 
+
                                     <div className="absolute left-0 top-0 w-11 h-11 bg-white border border-slate-100 rounded-2xl flex items-center justify-center text-slate-200 group-hover:border-accent group-hover:text-accent transition-all duration-500 z-10 shadow-sm group-hover:shadow-xl group-hover:scale-110">
                                         <FaClock size={14} />
                                     </div>

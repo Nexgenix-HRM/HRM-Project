@@ -4,7 +4,7 @@ import {
     FaCloudUploadAlt, FaCalendarAlt, FaEnvelope,
     FaInfoCircle, FaRegClock, FaChevronRight, FaArrowRight
 } from 'react-icons/fa';
-import { leaveApi } from '../../../api/leaveApi';
+import { leaveApi } from '../../../Api/leaveApi';
 
 const Leave = () => {
     const [leaves, setLeaves] = useState([]);

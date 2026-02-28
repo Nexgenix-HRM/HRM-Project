@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaBullhorn, FaCalendarAlt, FaUser } from 'react-icons/fa';
-import { noticeApi } from '../../../api/noticeApi';
+import { noticeApi } from '../../../Api/noticeApi';
 
 const Notices = () => {
     const [notices, setNotices] = useState([]);

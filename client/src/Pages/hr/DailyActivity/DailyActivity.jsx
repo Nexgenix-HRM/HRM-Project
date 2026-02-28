@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaClock, FaCalendarDay, FaHistory, FaHourglassHalf } from 'react-icons/fa';
-import { employeeApi } from '../../../api/employeeApi';
+import { employeeApi } from '../../../Api/employeeApi';
 
 const DailyActivity = () => {
     const [activities, setActivities] = useState([]);

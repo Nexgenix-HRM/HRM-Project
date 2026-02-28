@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaSignInAlt, FaSignOutAlt, FaHistory, FaFingerprint, FaClock } from 'react-icons/fa';
-import { attendanceApi } from '../../../api/attendanceApi';
+import { attendanceApi } from '../../../Api/attendanceApi';
 import { formatTo12Hour } from '../../../utils/timeFormatter';
 
 const Attendance = () => {

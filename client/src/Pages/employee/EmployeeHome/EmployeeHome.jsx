@@ -5,8 +5,8 @@ import {
     FaUserClock, FaClipboardList, FaDoorOpen, FaHistory,
     FaRegCalendarAlt, FaChevronRight, FaBullhorn
 } from 'react-icons/fa';
-import { employeeApi } from '../../../api/employeeApi';
-import { noticeApi } from '../../../api/noticeApi';
+import { employeeApi } from '../../../Api/employeeApi';
+import { noticeApi } from '../../../Api/noticeApi';
 import NoticeAcknowledgment from '../../../components/NoticeAcknowledgment';
 
 const EmployeeHome = () => {

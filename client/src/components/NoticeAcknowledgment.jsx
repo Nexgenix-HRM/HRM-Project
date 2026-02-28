@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaBullhorn, FaTimes, FaArrowRight } from 'react-icons/fa';
-import { noticeApi } from '../api/noticeApi';
+import { noticeApi } from '../Api/noticeApi';
 
 const NoticeAcknowledgment = () => {
     const navigate = useNavigate();

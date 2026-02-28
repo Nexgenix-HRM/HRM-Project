@@ -1,38 +1,38 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login/Login.jsx';
+import Login from './Pages/Login/Login.jsx';
 import DashboardLayout from './layouts/DashboardLayout.jsx';
 
 // Employee Pages
-import EmployeeHome from './pages/employee/EmployeeHome/EmployeeHome.jsx';
-import Attendance from './pages/employee/Attendance/Attendance.jsx';
-import Todo from './pages/employee/Todo/Todo.jsx';
-import DailyActivity from './pages/employee/DailyActivity/DailyActivity.jsx';
-import Directory from './pages/employee/Directory/Directory.jsx';
-import Profile from './pages/employee/Profile/Profile.jsx';
-import Leave from './pages/employee/Leave/Leave.jsx';
-import Notices from './pages/employee/Notices/Notices.jsx';
+import EmployeeHome from './Pages/employee/EmployeeHome/EmployeeHome.jsx';
+import Attendance from './Pages/employee/Attendance/Attendance.jsx';
+import Todo from './Pages/employee/Todo/Todo.jsx';
+import DailyActivity from './Pages/employee/DailyActivity/DailyActivity.jsx';
+import Directory from './Pages/employee/Directory/Directory.jsx';
+import Profile from './Pages/employee/Profile/Profile.jsx';
+import Leave from './Pages/employee/Leave/Leave.jsx';
+import Notices from './Pages/employee/Notices/Notices.jsx';
 
 // CEO Pages
-import CEOHome from './pages/ceo/CEOHome/CEOHome.jsx';
-import UserManagement from './pages/ceo/UserManagement/UserManagement.jsx';
-import MonitoringOverview from './pages/ceo/MonitoringOverview/MonitoringOverview.jsx';
-import ActivityMonitoring from './pages/ceo/ActivityMonitoring/ActivityMonitoring.jsx';
-import TodoMonitoring from './pages/ceo/TodoMonitoring/TodoMonitoring.jsx';
-import AttendanceMonitoring from './pages/ceo/AttendanceMonitoring/AttendanceMonitoring.jsx';
-import NoticeManagement from './pages/ceo/NoticeManagement/NoticeManagement.jsx';
+import CEOHome from './Pages/ceo/CEOHome/CEOHome.jsx';
+import UserManagement from './Pages/ceo/UserManagement/UserManagement.jsx';
+import MonitoringOverview from './Pages/ceo/MonitoringOverview/MonitoringOverview.jsx';
+import ActivityMonitoring from './Pages/ceo/ActivityMonitoring/ActivityMonitoring.jsx';
+import TodoMonitoring from './Pages/ceo/TodoMonitoring/TodoMonitoring.jsx';
+import AttendanceMonitoring from './Pages/ceo/AttendanceMonitoring/AttendanceMonitoring.jsx';
+import NoticeManagement from './Pages/ceo/NoticeManagement/NoticeManagement.jsx';
 
 // HR Pages
-import HRHome from './pages/hr/HRHome/HRHome.jsx';
-import HRAttendance from './pages/hr/Attendance/Attendance.jsx';
-import HRTodo from './pages/hr/Todo/Todo.jsx';
-import HRDailyActivity from './pages/hr/DailyActivity/DailyActivity.jsx';
-import HRLeaveRequest from './pages/hr/LeaveRequest/LeaveRequest.jsx';
-import HRNoticeManagement from './pages/hr/NoticeManagement/NoticeManagement.jsx';
+import HRHome from './Pages/hr/HRHome/HRHome.jsx';
+import HRAttendance from './Pages/hr/Attendance/Attendance.jsx';
+import HRTodo from './Pages/hr/Todo/Todo.jsx';
+import HRDailyActivity from './Pages/hr/DailyActivity/DailyActivity.jsx';
+import HRLeaveRequest from './Pages/hr/LeaveRequest/LeaveRequest.jsx';
+import HRNoticeManagement from './Pages/hr/NoticeManagement/NoticeManagement.jsx';
 import HRUserManagement from './Pages/hr/UserManagement/UserManagement.jsx';
 
 // Shared Pages
-import ProjectsList from './pages/shared/Projects/ProjectsList.jsx';
-import ProjectBoard from './pages/shared/Projects/ProjectBoard.jsx';
+import ProjectsList from './Pages/shared/Projects/ProjectsList.jsx';
+import ProjectBoard from './Pages/shared/Projects/ProjectBoard.jsx';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem('token');

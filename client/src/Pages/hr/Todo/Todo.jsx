@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaPaperPlane, FaEdit, FaClipboardCheck, FaProjectDiagram, FaUserTie, FaHistory, FaArrowRight, FaClock } from 'react-icons/fa';
-import { todoApi } from '../../../api/todoApi';
+import { todoApi } from '../../../Api/todoApi';
 
 const Todo = () => {
     const [formData, setFormData] = useState({

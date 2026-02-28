@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { monitoringApi } from '../../../api/monitoringApi';
+import { monitoringApi } from '../../../Api/monitoringApi';
 import { FaClipboardList, FaCalendarAlt, FaUserCircle, FaClock, FaSearch } from 'react-icons/fa';
 
 const ActivityMonitoring = () => {
@@ -15,7 +15,7 @@ const ActivityMonitoring = () => {
             const response = await monitoringApi.getActivities(date);
             setActivities(response.data);
 
-            
+
             setExpandedUsers({});
         } catch (error) {
             console.error("Error fetching activities", error);
@@ -40,11 +40,11 @@ const ActivityMonitoring = () => {
         try {
             const s = new Date(`1970-01-01T${start}`);
             const e = new Date(`1970-01-01T${end}`);
-            const diff = (e - s) / 60000; 
+            const diff = (e - s) / 60000;
             const h = Math.floor(diff / 60);
             const m = Math.round(diff % 60);
             return `${h > 0 ? h + 'h ' : ''}${m}m`;
-        // eslint-disable-next-line no-unused-vars
+            // eslint-disable-next-line no-unused-vars
         } catch (e) {
             return "N/A";
         }

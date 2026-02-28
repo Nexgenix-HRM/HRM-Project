@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaUserCircle, FaCamera, FaEdit, FaSave, FaTimes, FaEnvelope, FaPhoneAlt, FaCalendarAlt, FaIdBadge, FaShieldAlt, FaExternalLinkAlt } from 'react-icons/fa';
-import { employeeApi } from '../../../api/employeeApi';
+import { employeeApi } from '../../../Api/employeeApi';
 
 const Profile = () => {
     const [user, setUser] = useState(null);

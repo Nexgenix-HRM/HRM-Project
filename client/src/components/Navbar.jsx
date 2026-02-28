@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaBell, FaUserCircle, FaSignOutAlt, FaBars, FaClock, FaBullhorn } from 'react-icons/fa';
-import { attendanceApi } from '../api/attendanceApi';
-import { employeeApi } from '../api/employeeApi';
-import { noticeApi } from '../api/noticeApi';
-import { notificationApi } from '../api/notificationApi';
+import { attendanceApi } from '../Api/attendanceApi';
+import { employeeApi } from '../Api/employeeApi';
+import { noticeApi } from '../Api/noticeApi';
+import { notificationApi } from '../Api/notificationApi';
 
 const Navbar = ({ isMobile, onToggleSidebar }) => {
     const navigate = useNavigate();

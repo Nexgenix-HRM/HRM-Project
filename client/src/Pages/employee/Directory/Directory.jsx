@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { employeeApi } from '../../../api/employeeApi';
+import { employeeApi } from '../../../Api/employeeApi';
 import { FaUserCircle, FaSearch, FaEnvelope, FaPhoneAlt, FaIdBadge, FaShieldAlt, FaBriefcase, FaUsers } from 'react-icons/fa';
 
 const Directory = () => {
