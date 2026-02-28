@@ -39,19 +39,27 @@ Route::get('/debug/test-mail', function() {
         'username' => config('mail.mailers.smtp.username'),
     ];
 
+    $env_sources = [
+        'MAIL_PORT' => getenv('MAIL_PORT'),
+        'MAIL_ENCRYPTION' => getenv('MAIL_ENCRYPTION'),
+        'MAIL_MAILER' => getenv('MAIL_MAILER'),
+    ];
+
     try {
         \Illuminate\Support\Facades\Mail::raw('Test email from Nexgenix HRM production server.', function($message) {
             $message->to('mdmonir7458596@gmail.com')->subject('HRM Production Mail Test');
         });
         return response()->json([
             'message' => 'Test email sent successfully!',
-            'active_config' => $config
+            'active_config' => $config,
+            'env_raw' => $env_sources
         ]);
     } catch (\Exception $e) {
         return response()->json([
             'error' => $e->getMessage(),
             'active_config' => $config,
-            'advice' => 'If the port above is still 587, you MUST check your Render Dashboard Environment tab and delete/update the MAIL_PORT variable there.'
+            'env_raw' => $env_sources,
+            'advice' => 'If you see "ssl" in env_raw above for port 587, you MUST delete MAIL_ENCRYPTION from the Render Dashboard Environment tab.'
         ], 500);
     }
 });
