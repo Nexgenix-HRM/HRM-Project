@@ -26,6 +26,25 @@ use App\Http\Controllers\TaskAttachmentController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
+// Public Debug Routes
+Route::get('/ping', function() {
+    return response()->json(['status' => 'ok', 'time' => now()]);
+});
+
+Route::get('/debug/test-mail', function() {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('Test email from Nexgenix HRM production server.', function($message) {
+            $message->to('mdmonir7458596@gmail.com')->subject('HRM Production Mail Test');
+        });
+        return response()->json(['message' => 'Test email sent successfully!']);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => config('app.debug') ? $e->getTrace() : null
+        ], 500);
+    }
+});
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     
@@ -122,21 +141,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/hr/users/{id}', [UserController::class, 'destroy']);
     });
 
-    // Notifications
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markOneAsRead']);
-
-    // Debug Routes
-    Route::get('/debug/test-mail', function() {
-        try {
-            \Illuminate\Support\Facades\Mail::raw('Test email from Nexgenix HRM production server.', function($message) {
-                $message->to('mdmonir7458596@gmail.com')->subject('HRM Production Mail Test');
-            });
-            return response()->json(['message' => 'Test email sent successfully!']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    });
 });
 
