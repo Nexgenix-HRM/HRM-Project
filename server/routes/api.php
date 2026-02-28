@@ -32,15 +32,26 @@ Route::get('/ping', function() {
 });
 
 Route::get('/debug/test-mail', function() {
+    $config = [
+        'host' => config('mail.mailers.smtp.host'),
+        'port' => config('mail.mailers.smtp.port'),
+        'encryption' => config('mail.mailers.smtp.encryption'),
+        'username' => config('mail.mailers.smtp.username'),
+    ];
+
     try {
         \Illuminate\Support\Facades\Mail::raw('Test email from Nexgenix HRM production server.', function($message) {
             $message->to('mdmonir7458596@gmail.com')->subject('HRM Production Mail Test');
         });
-        return response()->json(['message' => 'Test email sent successfully!']);
+        return response()->json([
+            'message' => 'Test email sent successfully!',
+            'active_config' => $config
+        ]);
     } catch (\Exception $e) {
         return response()->json([
             'error' => $e->getMessage(),
-            'trace' => config('app.debug') ? $e->getTrace() : null
+            'active_config' => $config,
+            'advice' => 'If the port above is still 587, you MUST check your Render Dashboard Environment tab and delete/update the MAIL_PORT variable there.'
         ], 500);
     }
 });
