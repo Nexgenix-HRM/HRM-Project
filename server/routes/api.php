@@ -126,4 +126,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markOneAsRead']);
+
+    // Debug Routes
+    Route::get('/debug/test-mail', function() {
+        try {
+            \Illuminate\Support\Facades\Mail::raw('Test email from Nexgenix HRM production server.', function($message) {
+                $message->to('mdmonir7458596@gmail.com')->subject('HRM Production Mail Test');
+            });
+            return response()->json(['message' => 'Test email sent successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    });
 });
+
