@@ -14,4 +14,3 @@
 .phpunit.result.cache
 Dockerfile
 .dockerignore
-000-default.conf
