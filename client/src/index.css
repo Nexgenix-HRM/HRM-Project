@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #2D0052;
+    --color-accent: #7030A0;
+    --color-success: #9333ea;
+    --color-dark: #1a0031;
+}
+
+:root {
+    --primary-color: #2D0052;
+    --accent-color: #7030A0;
+    --bg-color: #ffffff;
+    --sidebar-bg: #2D0052;
+    --sidebar-hover: #3d006e;
+}
+
+/* Smooth scrolling globally */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #ffffff;
+    /* Premium Mesh Gradient / Aurora Effect */
+    background-image:
+        radial-gradient(at 0% 0%, rgba(112, 48, 160, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(255, 182, 193, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(112, 48, 160, 0.03) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 182, 193, 0.05) 0px, transparent 50%),
+        linear-gradient(135deg, #ffffff 0%, #faf8ff 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Subtle dot pattern overlay for texture */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#7030a008 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.transition {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+.z-index-1030 {
+    z-index: 1030;
+}
+
+/* Content spacing utilities */
+.content-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
