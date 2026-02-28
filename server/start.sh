@@ -1,3 +1,9 @@
+# Copy production env if exists
+if [ -f .env.render ]; then
+    echo "Using .env.render configuration..."
+    cp .env.render .env
+fi
+
 # Run migrations and seed
 echo "Running migrations and seeding..."
 php artisan migrate --seed --force
