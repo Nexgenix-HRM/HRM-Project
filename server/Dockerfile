@@ -41,5 +41,9 @@ RUN a2enmod rewrite
 # Expose port 80
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Copy startup script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Start using the script
+CMD ["/usr/local/bin/start.sh"]
