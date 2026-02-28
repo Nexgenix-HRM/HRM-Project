@@ -1,8 +1,6 @@
-#!/bin/bash
-
-# Run migrations
-echo "Running migrations..."
-php artisan migrate --force
+# Run migrations and seed
+echo "Running migrations and seeding..."
+php artisan migrate --seed --force
 
 # Start Apache
 echo "Starting Apache..."

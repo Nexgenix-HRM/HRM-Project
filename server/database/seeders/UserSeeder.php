@@ -14,27 +14,33 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // CEO
-        User::create([
-            'name' => 'CEO Administrative',
-            'email' => 'ceo@nexgenix.com',
-            'password' => Hash::make('password'),
-            'role' => 'ceo',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'ceo@nexgenix.com'],
+            [
+                'name' => 'CEO Administrative',
+                'password' => Hash::make('password'),
+                'role' => 'ceo',
+            ]
+        );
 
         // HR
-        User::create([
-            'name' => 'HR Manager',
-            'email' => 'hr@nexgenix.com',
-            'password' => Hash::make('password'),
-            'role' => 'hr',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'hr@nexgenix.com'],
+            [
+                'name' => 'HR Manager',
+                'password' => Hash::make('password'),
+                'role' => 'hr',
+            ]
+        );
 
         // Employee
-        User::create([
-            'name' => 'Regular Employee',
-            'email' => 'employee@nexgenix.com',
-            'password' => Hash::make('password'),
-            'role' => 'employee',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'employee@nexgenix.com'],
+            [
+                'name' => 'Regular Employee',
+                'password' => Hash::make('password'),
+                'role' => 'employee',
+            ]
+        );
     }
 }
