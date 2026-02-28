@@ -4,6 +4,11 @@ if [ -f .env.render ]; then
     cp .env.render .env
 fi
 
+# Clear config and cache to ensure new env vars are used
+echo "Clearing cache and config..."
+php artisan config:clear
+php artisan cache:clear
+
 # Run migrations and seed
 echo "Running migrations and seeding..."
 php artisan migrate --seed --force
