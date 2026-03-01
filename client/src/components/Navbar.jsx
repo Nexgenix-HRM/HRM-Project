@@ -120,9 +120,12 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
 
     const getProfileImage = () => {
         if (userProfile.profile_image) {
+            const imageUrl = userProfile.profile_image.startsWith('http')
+                ? userProfile.profile_image
+                : `${import.meta.env.VITE_STORAGE_URL}/${userProfile.profile_image}`;
             return (
                 <img
-                    src={`${import.meta.env.VITE_STORAGE_URL}/${userProfile.profile_image}`}
+                    src={imageUrl}
                     alt={userProfile.name}
                     className="navbar-profile-image"
                 />
@@ -265,7 +268,7 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
                             <div className="w-6 h-6 rounded-full overflow-hidden border-2 border-white/80 shadow-sm flex items-center justify-center bg-slate-100 flex-shrink-0">
                                 {userProfile.profile_image ? (
                                     <img
-                                        src={`${import.meta.env.VITE_STORAGE_URL}/${userProfile.profile_image}`}
+                                        src={userProfile.profile_image.startsWith('http') ? userProfile.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${userProfile.profile_image}`}
                                         alt={userProfile.name}
                                         className="w-full h-full object-cover"
                                     />
@@ -284,7 +287,7 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
                                     <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center bg-white flex-shrink-0">
                                         {userProfile.profile_image ? (
                                             <img
-                                                src={`${import.meta.env.VITE_STORAGE_URL}/${userProfile.profile_image}`}
+                                                src={userProfile.profile_image.startsWith('http') ? userProfile.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${userProfile.profile_image}`}
                                                 alt={userProfile.name}
                                                 className="w-full h-full object-cover"
                                             />

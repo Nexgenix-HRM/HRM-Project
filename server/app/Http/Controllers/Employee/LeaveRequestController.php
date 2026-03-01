@@ -8,6 +8,7 @@ use App\Models\LeaveRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\LeaveStatusUpdated;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class LeaveRequestController extends Controller
 {
@@ -38,7 +39,9 @@ class LeaveRequestController extends Controller
 
         $path = null;
         if ($request->hasFile('document')) {
-            $path = $request->file('document')->store('leaves', 'public');
+            $path = Cloudinary::upload($request->file('document')->getRealPath(), [
+                'folder' => 'leaves'
+            ])->getSecurePath();
         }
 
         $leave = LeaveRequest::create([

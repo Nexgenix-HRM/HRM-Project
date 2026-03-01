@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TaskAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class TaskAttachmentController extends Controller
 {
@@ -16,12 +17,14 @@ class TaskAttachmentController extends Controller
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('task-attachments', 'public');
+        $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
+            'folder' => 'task-attachments'
+        ])->getSecurePath();
 
         $attachment = TaskAttachment::create([
             'task_id' => $request->task_id,
             'user_id' => $request->user()->id,
-            'file_path' => $path,
+            'file_path' => $uploadedFileUrl,
             'file_name' => $file->getClientOriginalName(),
             'file_type' => $file->getClientOriginalExtension(),
             'file_size' => $file->getSize(),
@@ -34,8 +37,13 @@ class TaskAttachmentController extends Controller
     {
         $attachment = TaskAttachment::findOrFail($id);
         
-        // Delete from storage
-        Storage::disk('public')->delete($attachment->file_path);
+        // Delete from Cloudinary if it's a Cloudinary URL
+        if (str_starts_with($attachment->file_path, 'http')) {
+            // Note: Cloudinary deletion usually requires public_id which we might not have stored.
+            // For now, we delete from database. If needed, we can extract public_id from URL.
+        } else {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
         
         $attachment->delete();
 

@@ -386,10 +386,10 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
                                         {isImage(a.file_type) ? (
                                             <div
                                                 className="h-32 bg-slate-200 cursor-pointer overflow-hidden relative"
-                                                onClick={() => setPreviewImageUrl(`${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`)}
+                                                onClick={() => setPreviewImageUrl(a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`)}
                                             >
                                                 <img
-                                                    src={`${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
+                                                    src={a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
                                                     alt={a.file_name}
                                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
@@ -411,7 +411,7 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
                                                 </div>
                                                 <div className="flex gap-1">
                                                     <a
-                                                        href={`${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
+                                                        href={a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="p-1.5 text-slate-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-colors"

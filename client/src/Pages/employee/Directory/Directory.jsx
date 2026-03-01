@@ -45,7 +45,7 @@ const Directory = () => {
                     <div className="w-20 h-20 md:w-24 md:h-24 rounded-[2rem] border-4 border-white shadow-xl overflow-hidden bg-slate-50 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
                         {member.profile_image ? (
                             <img
-                                src={`${import.meta.env.VITE_STORAGE_URL}/${member.profile_image}`}
+                                src={member.profile_image.startsWith('http') ? member.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${member.profile_image}`}
                                 alt={member.name}
                                 className="w-full h-full object-cover"
                             />

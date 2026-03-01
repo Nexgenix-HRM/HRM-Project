@@ -80,7 +80,7 @@ const Profile = () => {
 
     const getImageUrl = (path) => {
         if (!path) return null;
-        return `${import.meta.env.VITE_STORAGE_URL}/${path}`;
+        return path.startsWith('http') ? path : `${import.meta.env.VITE_STORAGE_URL}/${path}`;
     };
 
     return (

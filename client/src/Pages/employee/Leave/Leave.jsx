@@ -275,7 +275,7 @@ const Leave = () => {
                                                     </p>
                                                     {leave.document_path && (
                                                         <a
-                                                            href={`${import.meta.env.VITE_STORAGE_URL}/${leave.document_path}`}
+                                                            href={leave.document_path.startsWith('http') ? leave.document_path : `${import.meta.env.VITE_STORAGE_URL}/${leave.document_path}`}
                                                             target="_blank" rel="noopener noreferrer"
                                                             className="text-[8px] text-slate-900 font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded-full inline-flex items-center mt-1 hover:bg-slate-900 hover:text-white transition-colors"
                                                         >

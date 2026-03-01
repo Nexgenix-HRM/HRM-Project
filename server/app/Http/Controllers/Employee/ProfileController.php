@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProfileController extends Controller
 {
@@ -28,13 +29,17 @@ class ProfileController extends Controller
         $data = $request->only(['name', 'designation', 'mobile_number']);
 
         if ($request->hasFile('profile_image')) {
-            // Delete old image if exists
-            if ($user->profile_image) {
+            // No need to delete old local image if we're moving to Cloudinary,
+            // but for consistency we can keep the logic if it was a local path before
+            if ($user->profile_image && !str_starts_with($user->profile_image, 'http')) {
                 Storage::disk('public')->delete($user->profile_image);
             }
             
-            $path = $request->file('profile_image')->store('profiles', 'public');
-            $data['profile_image'] = $path;
+            $uploadedFileUrl = Cloudinary::upload($request->file('profile_image')->getRealPath(), [
+                'folder' => 'profiles'
+            ])->getSecurePath();
+            
+            $data['profile_image'] = $uploadedFileUrl;
         }
 
         $user->update($data);
