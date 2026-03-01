@@ -193,7 +193,12 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
                         </button>
 
                         {showNotifications && (
-                            <div className="absolute top-[calc(100%+0.5rem)] right-[-20px] sm:right-0 md:right-[-40px] w-[calc(100vw-2rem)] sm:w-[350px] bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[1001]">
+                            <div className={`
+                                ${isMobile
+                                    ? 'fixed top-[70px] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)]'
+                                    : 'absolute top-[calc(100%+0.5rem)] right-[-20px] sm:right-0 md:right-[-40px] w-screen sm:w-[350px]'} 
+                                max-w-[400px] bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[1001]
+                            `}>
                                 <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/5 border-b border-slate-200 mb-2">
                                     <FaBell size={16} className="text-accent" />
                                     <div className="flex flex-col gap-0.5">
