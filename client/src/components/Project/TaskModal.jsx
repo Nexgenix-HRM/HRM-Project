@@ -299,7 +299,7 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
     const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-[1100] p-2 md:p-4">
             <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100">
                 {/* Header */}
                 <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -610,7 +610,7 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
             {/* Lightbox / Full Image Viewer */}
             {previewImageUrl && (
                 <div
-                    className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
+                    className="fixed inset-0 z-[1200] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
                     onClick={() => setPreviewImageUrl(null)}
                 >
                     <button
