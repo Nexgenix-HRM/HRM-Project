@@ -35,11 +35,17 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->profile_image);
             }
             
-            $uploadedFileUrl = Cloudinary::upload($request->file('profile_image')->getRealPath(), [
-                'folder' => 'profiles'
-            ])->getSecurePath();
-            
-            $data['profile_image'] = $uploadedFileUrl;
+            try {
+                $uploadedFileUrl = Cloudinary::upload($request->file('profile_image')->getRealPath(), [
+                    'folder' => 'profiles'
+                ])->getSecurePath();
+                $data['profile_image'] = $uploadedFileUrl;
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => 'Cloudinary upload failed: ' . $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ], 500);
+            }
         }
 
         $user->update($data);
