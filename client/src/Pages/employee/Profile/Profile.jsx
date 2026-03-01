@@ -86,18 +86,15 @@ const Profile = () => {
     return (
         <div className="min-h-screen pb-12 w-full relative">
 
-            <div className="relative h-40 lg:h-44 bg-white border-b border-slate-100/50 overflow-hidden flex items-center">
-
+            <div className="relative min-h-[160px] lg:h-44 bg-white border-b border-slate-100/50 overflow-hidden flex items-center py-6 lg:py-0">
                 <div className="absolute inset-0 bg-[radial-gradient(at_top_right,_rgba(59,130,246,0.03)_0%,_transparent_50%),_radial-gradient(at_bottom_left,_rgba(112,48,160,0.02)_0%,_transparent_50%)]"></div>
+                <div className="container mx-auto px-6 lg:px-10 relative z-10">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 lg:gap-8 text-center md:text-left">
 
-                <div className="container mx-auto px-10 relative z-10">
-                    <div className="flex items-center justify-between gap-8">
 
-
-                        <div className="flex items-center gap-6 animate-in slide-in-from-left-6 duration-700">
-
+                        <div className="flex flex-col md:flex-row items-center gap-4 lg:gap-6 animate-in slide-in-from-left-6 duration-700">
                             <div className="relative flex-shrink-0">
-                                <div className="w-20 h-20 lg:w-24 lg:h-24 p-1 bg-gradient-to-tr from-accent/20 to-purple-400/10 rounded-2xl shadow-lg border border-white">
+                                <div className="w-24 h-24 lg:w-28 lg:h-28 p-1 bg-gradient-to-tr from-accent/20 to-purple-400/10 rounded-2xl shadow-lg border border-white">
                                     <div className="w-full h-full rounded-xl bg-white overflow-hidden relative">
                                         {(previewImage || user.profile_image) ? (
                                             <img
@@ -110,21 +107,19 @@ const Profile = () => {
                                                 <FaUserCircle className="w-12 h-12 text-slate-100" />
                                             </div>
                                         )}
-
                                         <div className="absolute bottom-1.5 right-1.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div>
                                     </div>
                                 </div>
                                 {isEditing && (
                                     <label className="absolute -bottom-1 -right-1 p-2 bg-slate-900 text-white rounded-lg shadow-xl cursor-pointer hover:bg-accent transition-all animate-in zoom-in duration-300 z-20 border border-white">
-                                        <FaCamera size={10} />
+                                        <FaCamera size={14} />
                                         <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                                     </label>
                                 )}
                             </div>
 
-
-                            <div className="flex flex-col">
-                                <h1 className="text-xl md:text-2xl font-[1000] text-slate-900 tracking-tight leading-none mb-1 uppercase">
+                            <div className="flex flex-col items-center md:items-start">
+                                <h1 className="text-xl md:text-2xl lg:text-3xl font-[1000] text-slate-900 tracking-tight leading-tight mb-1 uppercase">
                                     {user.name}
                                 </h1>
                                 <span className="text-xs md:text-sm font-bold text-slate-400 tracking-wide">
@@ -134,27 +129,27 @@ const Profile = () => {
                         </div>
 
 
-                        <div className="animate-in slide-in-from-right-6 duration-700">
+                        <div className="flex items-center justify-center md:justify-end animate-in slide-in-from-right-6 duration-700 w-full md:w-auto">
                             {!isEditing ? (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-black hover:shadow-xl hover:shadow-slate-200 transform hover:-translate-y-0.5"
+                                    className="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all hover:bg-black hover:shadow-xl hover:shadow-slate-200 transform hover:-translate-y-0.5"
                                 >
                                     Modify Profile
                                 </button>
                             ) : (
-                                <div className="flex gap-2.5">
+                                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                                     <button
                                         onClick={() => setIsEditing(false)}
-                                        className="px-5 py-2.5 bg-white text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
+                                        className="w-full sm:w-auto px-6 py-3.5 bg-white text-slate-400 border border-slate-200 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
                                     >
                                         Discard
                                     </button>
                                     <button
                                         onClick={handleSubmit}
-                                        className="px-6 py-2.5 bg-accent text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-accent/10 hover:bg-slate-900 transition-all transform hover:-translate-y-0.5"
+                                        className="w-full sm:w-auto px-8 py-3.5 bg-accent text-white rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest shadow-lg shadow-accent/10 hover:bg-slate-900 transition-all transform hover:-translate-y-0.5"
                                     >
-                                        Submit
+                                        Submit Changes
                                     </button>
                                 </div>
                             )}
@@ -168,9 +163,8 @@ const Profile = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     <div className="lg:col-span-4 space-y-6">
-                        <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100 overflow-hidden relative group min-h-[400px] flex flex-col justify-center">
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-10 shadow-sm border border-slate-100 overflow-hidden relative group min-h-[auto] lg:min-h-[400px] flex flex-col justify-center transition-all hover:shadow-md">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-
                             <h3 className="text-sm font-black text-slate-900 mb-6 uppercase tracking-widest flex items-center gap-2 relative z-10">
                                 <div className="w-1.5 h-4 bg-accent rounded-full"></div>
                                 Employment Info
@@ -196,15 +190,15 @@ const Profile = () => {
 
 
                     <div className="lg:col-span-8">
-                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[400px]">
-                            <div className="p-10 md:p-12">
-                                <div className="flex items-center justify-between mb-10">
+                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[auto] lg:min-h-[400px]">
+                            <div className="p-6 sm:p-10 md:p-12">
+                                <div className="flex items-center justify-between mb-8 sm:mb-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-slate-900 mb-1">Personal Details</h3>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Profile Configuration</p>
+                                        <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Personal Details</h3>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Profile Configuration</p>
                                     </div>
-                                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                                        <FaEnvelope size={16} />
+                                    <div className="hidden sm:flex w-12 h-12 bg-slate-50 rounded-2xl items-center justify-center text-slate-400 border border-slate-100">
+                                        <FaEnvelope size={18} />
                                     </div>
                                 </div>
 

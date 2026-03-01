@@ -89,8 +89,8 @@ const Todo = () => {
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
 
-                <div className="xl:col-span-5 space-y-6 sticky top-8">
-                    <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-8 md:p-10 relative overflow-hidden group">
+                <div className="xl:col-span-5 space-y-6 xl:sticky xl:top-8">
+                    <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-6 sm:p-8 md:p-10 relative overflow-hidden group">
 
                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
 
@@ -177,7 +177,7 @@ const Todo = () => {
 
                 <div className="xl:col-span-7">
                     <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden min-h-[600px]">
-                        <div className="p-8 md:p-10 flex items-center justify-between border-b border-slate-50 bg-slate-50/10">
+                        <div className="p-6 sm:p-8 md:p-10 flex items-center justify-between border-b border-slate-50 bg-slate-50/10">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-900 flex items-center gap-3">
                                     <FaHistory className="text-slate-200" size={20} />
@@ -187,7 +187,7 @@ const Todo = () => {
                             </div>
                         </div>
 
-                        <div className="p-8 md:p-10 space-y-6">
+                        <div className="p-6 sm:p-8 md:p-10 space-y-6">
                             {history.map((todo, index) => (
                                 <div key={todo.id} className="group relative">
                                     <div className="bg-slate-50/50 p-6 rounded-[2rem] border border-transparent hover:bg-white hover:border-slate-100 hover:shadow-2xl transition-all duration-500">

@@ -114,7 +114,7 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
     };
 
     return (
-        <nav className={`fixed top-0 right-0 h-[60px] bg-transparent z-[1000] transition-all duration-300 ${isMobile ? 'left-0' : 'left-[260px]'}`}>
+        <nav className={`fixed top-0 right-0 h-[60px] bg-white/80 backdrop-blur-md border-b border-slate-100 z-[1000] transition-all duration-300 ${isMobile ? 'left-0' : 'left-[260px]'}`}>
             <div className="h-full px-6 flex items-center justify-between max-w-full">
                 {/* Left Section */}
                 <div className="flex items-center gap-4">

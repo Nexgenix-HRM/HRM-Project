@@ -60,8 +60,8 @@ const DashboardLayout = () => {
                 paddingTop: '60px',
                 marginLeft: !isMobile ? '260px' : '0',
                 transition: 'margin-left 0.3s ease',
-                paddingLeft: isMobile ? '1rem' : '1.5rem',
-                paddingRight: isMobile ? '1rem' : '1.5rem'
+                paddingLeft: isMobile ? '0.5rem' : '1.5rem',
+                paddingRight: isMobile ? '0.5rem' : '1.5rem'
             }}>
                 <main style={{ maxWidth: '100%', margin: '0 auto' }}>
                     <Outlet />

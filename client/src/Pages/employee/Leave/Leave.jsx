@@ -123,7 +123,7 @@ const Leave = () => {
 
                 {userRole === 'employee' && (
                     <div className="xl:col-span-5">
-                        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/50 p-6 lg:p-8 sticky top-8">
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/50 p-6 lg:p-8 xl:sticky xl:top-8">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-lg font-bold text-slate-900">Request Leave</h3>
                                 <div className="p-2.5 bg-accent text-white rounded-xl shadow-lg shadow-accent/20">
