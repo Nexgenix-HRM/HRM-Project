@@ -17,9 +17,9 @@ class TaskAttachmentController extends Controller
         ]);
 
         $file = $request->file('file');
-        $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
+        $uploadedFileUrl = cloudinary()->uploadApi()->upload($file->getRealPath(), [
             'folder' => 'task-attachments'
-        ])->getSecurePath();
+        ])['secure_url'];
 
         $attachment = TaskAttachment::create([
             'task_id' => $request->task_id,

@@ -36,9 +36,9 @@ class ProfileController extends Controller
             }
             
             try {
-                $uploadedFileUrl = Cloudinary::upload($request->file('profile_image')->getRealPath(), [
+                $uploadedFileUrl = cloudinary()->uploadApi()->upload($request->file('profile_image')->getRealPath(), [
                     'folder' => 'profiles'
-                ])->getSecurePath();
+                ])['secure_url'];
                 $data['profile_image'] = $uploadedFileUrl;
             } catch (\Exception $e) {
                 return response()->json([
