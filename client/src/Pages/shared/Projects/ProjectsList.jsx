@@ -62,7 +62,7 @@ const ProjectsList = () => {
     if (loading) return <div className="p-8 text-center text-gray-500">Loading projects...</div>;
 
     return (
-        <div className="p-8 space-y-6 bg-gray-50 min-h-screen">
+        <div className="p-4 lg:p-8 space-y-6 bg-gray-50 min-h-screen">
 
             <div className="flex justify-between items-center">
                 <div>

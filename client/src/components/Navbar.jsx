@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaBell, FaUserCircle, FaSignOutAlt, FaBars, FaClock, FaBullhorn } from 'react-icons/fa';
 import { attendanceApi } from '../Api/attendanceApi';
@@ -20,6 +20,8 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
         profile_image: null
     });
     const role = localStorage.getItem('role');
+    const notificationRef = useRef(null);
+    const profileRef = useRef(null);
 
     const fetchUserData = async () => {
         try {
@@ -58,6 +60,22 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
         const pollInterval = setInterval(fetchUserData, 30000);
         return () => clearInterval(pollInterval);
     }, [role]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                setShowNotifications(false);
+            }
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfileMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -150,7 +168,7 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
                         </div>
                     )}
 
-                    <div className="relative">
+                    <div className="relative" ref={notificationRef}>
                         <button
                             className="relative bg-none border-none text-slate-500 cursor-pointer p-2 rounded-lg transition-all duration-200 hover:bg-accent/10 hover:text-accent hover:-translate-y-0.5 active:translate-y-0"
                             onClick={async () => {
@@ -175,7 +193,7 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
                         </button>
 
                         {showNotifications && (
-                            <div className="absolute top-[calc(100%+0.5rem)] right-0 md:right-[-40px] w-screen max-w-[350px] bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="absolute top-[calc(100%+0.5rem)] right-[-20px] sm:right-0 md:right-[-40px] w-[calc(100vw-2rem)] sm:w-[350px] bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[1001]">
                                 <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/5 border-b border-slate-200 mb-2">
                                     <FaBell size={16} className="text-accent" />
                                     <div className="flex flex-col gap-0.5">
@@ -231,7 +249,7 @@ const Navbar = ({ isMobile, onToggleSidebar }) => {
                         )}
                     </div>
 
-                    <div className="relative">
+                    <div className="relative" ref={profileRef}>
                         <button
                             className="flex items-center gap-2 bg-none border-none text-slate-700 cursor-pointer p-1.5 pr-3 rounded-xl transition-all duration-200 hover:bg-accent/10 hover:-translate-y-0.5 active:translate-y-0"
                             onClick={() => {

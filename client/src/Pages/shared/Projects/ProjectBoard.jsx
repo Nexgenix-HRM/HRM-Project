@@ -172,24 +172,24 @@ const ProjectBoard = () => {
     return (
         <div className="h-screen flex flex-col bg-[#f4f5f7]">
             {/* Board Header */}
-            <div className="bg-white px-6 py-4 shadow-sm border-b border-gray-200 flex justify-between items-center flex-shrink-0">
+            <div className="bg-white px-4 sm:px-6 py-4 shadow-sm border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 flex-shrink-0">
                 <div>
-                    <h1 className="text-xl font-bold text-gray-800">{project?.name}</h1>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 capitalize`}>
+                    <h1 className="text-lg sm:text-xl font-bold text-gray-800 line-clamp-1">{project?.name}</h1>
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-700 capitalize`}>
                             {project?.status?.replace('_', ' ')}
                         </span>
                         <span
-                            className="cursor-pointer hover:underline hover:text-indigo-600 transition-colors"
+                            className="cursor-pointer hover:underline hover:text-indigo-600 transition-colors whitespace-nowrap"
                             onClick={() => setShowMembersModal(true)}
                         >
                             {project?.members?.length} Members
                         </span>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                     <div
-                        className="flex -space-x-2 mr-4 cursor-pointer hover:opacity-80 transition-opacity"
+                        className="flex -space-x-2 mr-2 sm:mr-4 cursor-pointer hover:opacity-80 transition-opacity"
                         onClick={() => setShowMembersModal(true)}
                         title="View Team"
                     >
@@ -197,32 +197,32 @@ const ProjectBoard = () => {
                             <img
                                 key={m.id}
                                 src={m.profile_image ? `${import.meta.env.VITE_STORAGE_URL}/${m.profile_image}` : `https://ui-avatars.com/api/?name=${m.name}`}
-                                className="w-8 h-8 rounded-full border-2 border-white"
+                                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white"
                                 title={m.name}
                             />
                         ))}
                         {project?.members?.length > 5 && (
-                            <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-xs text-gray-500">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] sm:text-xs text-gray-500">
                                 +{project.members.length - 5}
                             </div>
                         )}
                     </div>
                     {canManageMembers && (
-                        <>
+                        <div className="flex gap-2">
                             <button
                                 onClick={() => setShowAddMemberModal(true)}
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors"
                             >
                                 <FaPlus /> Invite
                             </button>
                             <button
                                 onClick={() => setShowEditProjectModal(true)}
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors"
                                 title="Project Settings"
                             >
                                 <FaCog />
                             </button>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
