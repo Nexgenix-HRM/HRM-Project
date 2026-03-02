@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     FaCalendarPlus, FaCheck, FaTimes, FaFileAlt, FaHistory,
     FaCloudUploadAlt, FaCalendarAlt, FaEnvelope,
-    FaInfoCircle, FaRegClock, FaChevronRight, FaArrowRight
+    FaInfoCircle, FaRegClock, FaChevronRight, FaArrowRight, FaCheckCircle
 } from 'react-icons/fa';
 import { leaveApi } from '../../../Api/leaveApi';
 

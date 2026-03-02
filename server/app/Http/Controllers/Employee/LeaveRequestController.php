@@ -40,7 +40,8 @@ class LeaveRequestController extends Controller
         $path = null;
         if ($request->hasFile('document')) {
             $path = cloudinary()->uploadApi()->upload($request->file('document')->getRealPath(), [
-                'folder' => 'leaves'
+                'folder' => 'leaves',
+                'resource_type' => 'auto'
             ])['secure_url'];
         }
 
