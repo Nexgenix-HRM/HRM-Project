@@ -19,15 +19,18 @@ class TaskAttachmentController extends Controller
         $file = $request->file('file');
         
         try {
-            $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
+            $uploadedFileUrl = cloudinary()->uploadApi()->upload($file->getRealPath(), [
                 'folder' => 'task-attachments',
                 'use_filename' => true,
                 'unique_filename' => true,
                 'resource_type' => 'auto'
-            ])->getSecureUrl();
+            ])['secure_url'];
         } catch (\Exception $e) {
             \Log::error("Cloudinary upload failed for task attachment: " . $e->getMessage());
-            return response()->json(['message' => 'Failed to upload attachment to Cloudinary'], 500);
+            return response()->json([
+                'message' => 'Failed to upload attachment to Cloudinary',
+                'error' => $e->getMessage()
+            ], 500);
         }
 
         $attachment = TaskAttachment::create([
