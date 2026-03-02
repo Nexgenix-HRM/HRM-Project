@@ -16,6 +16,7 @@ const Leave = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [updatingId, setUpdatingId] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const userRole = localStorage.getItem('role');
