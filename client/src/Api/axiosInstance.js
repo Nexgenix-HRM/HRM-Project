@@ -30,7 +30,11 @@ axiosInstance.interceptors.response.use(
     },
     (error) => {
         // Generic error handling
-        const message = error.response?.data?.message || 'Something went wrong';
+        const backendMessage = error.response?.data?.message;
+        const detailedError = error.response?.data?.error;
+        const message = detailedError
+            ? `${backendMessage}: ${detailedError}`
+            : (backendMessage || 'Something went wrong');
 
         if (error.response?.status === 401) {
             // Handle unauthorized (session expired)
