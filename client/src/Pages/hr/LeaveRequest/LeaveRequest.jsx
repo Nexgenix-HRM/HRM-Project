@@ -125,6 +125,20 @@ const Leave = () => {
                 </div>
             </header>
 
+            <div className="max-w-7xl mx-auto relative z-10">
+                {error && (
+                    <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 text-rose-600 text-xs shadow-sm">
+                        <FaInfoCircle className="shrink-0" /> {error}
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-3 text-emerald-600 text-xs shadow-sm">
+                        <FaCheckCircle className="shrink-0" /> {successMessage}
+                    </div>
+                )}
+            </div>
+
             <div className={`max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 relative z-10`}>
 
                 {/* Left: Request Form */}
@@ -137,17 +151,7 @@ const Leave = () => {
                             </div>
                         </div>
 
-                        {error && (
-                            <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl flex items-center gap-2 text-rose-600 text-[11px] animate-in fade-in slide-in-from-top-1">
-                                <FaInfoCircle className="shrink-0" /> {error}
-                            </div>
-                        )}
 
-                        {successMessage && (
-                            <div className="mb-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center gap-2 text-emerald-600 text-[11px] animate-in fade-in slide-in-from-top-1">
-                                <FaCheckCircle className="shrink-0" /> {successMessage}
-                            </div>
-                        )}
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Date Selection */}
