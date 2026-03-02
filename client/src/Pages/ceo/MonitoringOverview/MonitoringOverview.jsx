@@ -15,6 +15,8 @@ const MonitoringOverview = () => {
     const [filters, setFilters] = useState({
         attendance: 'all',
     });
+    const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+    const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
     useEffect(() => {
         const fetchOverview = async () => {
@@ -70,11 +72,13 @@ const MonitoringOverview = () => {
                 </div>
                 <div className="flex flex-wrap items-center gap-2 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 shadow-inner w-full md:w-auto">
                     {/* Search */}
-                    <div className="relative group flex-1 md:flex-none">
+                    <div className={`relative group transition-all duration-300 ${isSearchExpanded ? 'flex-[5] md:flex-none' : 'flex-1 md:flex-none'}`}>
                         <input
                             type="text"
-                            className="w-full md:w-40 h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-[11px] font-bold text-slate-800 placeholder:text-slate-300"
-                            placeholder="Search name..."
+                            onFocus={() => setIsSearchExpanded(true)}
+                            onBlur={() => setIsSearchExpanded(false)}
+                            className={`h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-[11px] font-bold text-slate-800 placeholder:text-slate-300 w-full ${isSearchExpanded ? 'md:w-60' : 'md:w-40'}`}
+                            placeholder={isSearchExpanded ? "Search name..." : ""}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -82,8 +86,10 @@ const MonitoringOverview = () => {
                     </div>
 
                     {/* Attendance Filter */}
-                    <div className="relative flex-1 md:flex-none">
+                    <div className={`relative transition-all duration-300 ${isFilterExpanded ? 'flex-[5] md:flex-none' : 'flex-1 md:flex-none'}`}>
                         <select
+                            onFocus={() => setIsFilterExpanded(true)}
+                            onBlur={() => setIsFilterExpanded(false)}
                             value={filters.attendance}
                             onChange={(e) => setFilters({ ...filters, attendance: e.target.value })}
                             className="h-9 pl-3 pr-8 bg-white border border-slate-200 rounded-xl text-[11px] font-black text-slate-700 outline-none focus:border-emerald-500 transition-all cursor-pointer shadow-sm w-full md:w-40 appearance-none"

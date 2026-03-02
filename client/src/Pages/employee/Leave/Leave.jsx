@@ -16,12 +16,13 @@ const Leave = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [updatingId, setUpdatingId] = useState(null);
     const userRole = localStorage.getItem('role');
 
     const fetchLeaves = async () => {
         try {
-            const response = await leaveApi.getLeaves();
+            const response = userRole === 'employee' ? await leaveApi.getMyLeaves() : await leaveApi.getLeaves();
             setLeaves(response.data);
         } catch (error) {
             console.error(error);
@@ -58,8 +59,9 @@ const Leave = () => {
         try {
             await leaveApi.submitLeave(data);
             setFormData({ start_date: '', end_date: '', reason: '', document: null });
-            fetchLeaves();
-            alert('Leave request submitted successfully');
+            await fetchLeaves();
+            setSuccessMessage('Leave request submitted successfully');
+            setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
             console.error(error);
             setError(error.message || 'Error submitting leave request');
@@ -68,12 +70,15 @@ const Leave = () => {
 
     const handleStatusUpdate = async (id, status) => {
         setUpdatingId(id);
+        setError('');
         try {
             await leaveApi.updateStatus(id, status);
             await fetchLeaves();
+            setSuccessMessage(`Request ${status} successfully`);
+            setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
             console.error(error);
-            alert('Error updating status');
+            setError('Error updating status');
         } finally {
             setUpdatingId(null);
         }
@@ -134,6 +139,12 @@ const Leave = () => {
                             {error && (
                                 <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl flex items-center gap-2 text-rose-600 text-[11px] animate-in fade-in slide-in-from-top-1">
                                     <FaInfoCircle className="shrink-0" /> {error}
+                                </div>
+                            )}
+
+                            {successMessage && (
+                                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center gap-2 text-emerald-600 text-[11px] animate-in fade-in slide-in-from-top-1">
+                                    <FaCheckCircle className="shrink-0" /> {successMessage}
                                 </div>
                             )}
 

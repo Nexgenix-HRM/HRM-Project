@@ -8,6 +8,7 @@ const ActivityMonitoring = () => {
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [expandedUsers, setExpandedUsers] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
     const fetchActivities = async () => {
         setLoading(true);
@@ -81,11 +82,13 @@ const ActivityMonitoring = () => {
                     <p className="text-sm text-slate-500">Monitor employee work progress and task duration.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                    <div className="relative group flex-1 md:flex-none">
+                    <div className={`relative group transition-all duration-300 ${isSearchExpanded ? 'flex-[5] md:flex-none' : 'flex-1 md:flex-none'}`}>
                         <input
                             type="text"
-                            className="w-full md:w-64 h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-xs font-medium text-slate-800 placeholder:text-slate-300"
-                            placeholder="Search employees..."
+                            onFocus={() => setIsSearchExpanded(true)}
+                            onBlur={() => setIsSearchExpanded(false)}
+                            className={`h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-xs font-medium text-slate-800 placeholder:text-slate-300 w-full ${isSearchExpanded ? 'md:w-80' : 'md:w-64'}`}
+                            placeholder={isSearchExpanded ? "Search employees..." : ""}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
