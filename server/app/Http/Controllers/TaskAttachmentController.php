@@ -24,7 +24,7 @@ class TaskAttachmentController extends Controller
             'folder' => 'task-attachments',
             'use_filename' => true,
             'unique_filename' => true,
-            'resource_type' => $isImage ? 'image' : 'raw'
+            'resource_type' => 'auto'
         ])['secure_url'];
 
         $attachment = TaskAttachment::create([

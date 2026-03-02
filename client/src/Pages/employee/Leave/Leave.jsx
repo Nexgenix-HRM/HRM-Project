@@ -16,8 +16,8 @@ const Leave = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
     const [updatingId, setUpdatingId] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const userRole = localStorage.getItem('role');
 
     const fetchLeaves = async () => {
@@ -47,6 +47,7 @@ const Leave = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsSubmitting(true);
 
         const data = new FormData();
         data.append('start_date', formData.start_date);
@@ -58,13 +59,18 @@ const Leave = () => {
 
         try {
             await leaveApi.submitLeave(data);
-            setFormData({ start_date: '', end_date: '', reason: '', document: null });
-            await fetchLeaves();
             setSuccessMessage('Leave request submitted successfully');
+            setFormData({ start_date: '', end_date: '', reason: '', document: null });
+
+            // Fetch in background, success message is already shown
+            fetchLeaves();
+
             setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
             console.error(error);
             setError(error.message || 'Error submitting leave request');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -123,27 +129,27 @@ const Leave = () => {
                 </div>
             </header>
 
-            <div className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-[2000] pointer-events-none">
+            <div className="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-sm px-4 z-[9999] pointer-events-none">
                 {error && (
-                    <div className="mb-3 p-4 bg-rose-50 border-2 border-rose-100 rounded-2xl flex items-center justify-between gap-3 text-rose-600 text-xs shadow-2xl pointer-events-auto">
-                        <div className="flex items-center gap-3">
-                            <FaInfoCircle className="shrink-0" size={16} />
-                            <span className="font-semibold">{error}</span>
+                    <div className="mb-2 p-3 bg-white border-2 border-rose-500 rounded-xl flex items-center justify-between gap-3 text-rose-600 text-[11px] shadow-2xl pointer-events-auto">
+                        <div className="flex items-center gap-2">
+                            <FaInfoCircle className="shrink-0" size={14} />
+                            <span className="font-bold">{error}</span>
                         </div>
-                        <button onClick={() => setError('')} className="p-1.5 hover:bg-rose-100 rounded-xl transition-colors">
-                            <FaTimes size={12} />
+                        <button onClick={() => setError('')} className="p-1 hover:bg-rose-50 rounded-lg transition-colors">
+                            <FaTimes size={10} />
                         </button>
                     </div>
                 )}
 
                 {successMessage && (
-                    <div className="mb-3 p-4 bg-emerald-50 border-2 border-emerald-100 rounded-2xl flex items-center justify-between gap-3 text-emerald-600 text-xs shadow-2xl pointer-events-auto">
-                        <div className="flex items-center gap-3">
-                            <FaCheckCircle className="shrink-0" size={16} />
-                            <span className="font-semibold">{successMessage}</span>
+                    <div className="mb-2 p-3 bg-white border-2 border-emerald-500 rounded-xl flex items-center justify-between gap-3 text-emerald-600 text-[11px] shadow-2xl pointer-events-auto">
+                        <div className="flex items-center gap-2">
+                            <FaCheckCircle className="shrink-0" size={14} />
+                            <span className="font-bold">{successMessage}</span>
                         </div>
-                        <button onClick={() => setSuccessMessage('')} className="p-1.5 hover:bg-emerald-100 rounded-xl transition-colors">
-                            <FaTimes size={12} />
+                        <button onClick={() => setSuccessMessage('')} className="p-1 hover:bg-emerald-50 rounded-lg transition-colors">
+                            <FaTimes size={10} />
                         </button>
                     </div>
                 )}
@@ -233,9 +239,14 @@ const Leave = () => {
 
                                 <button
                                     type="submit"
-                                    className="w-full h-11 bg-accent text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group/btn shadow-md shadow-accent/10"
+                                    disabled={isSubmitting}
+                                    className={`w-full h-11 bg-accent text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group/btn shadow-md shadow-accent/10 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                                 >
-                                    Submit Request <FaArrowRight size={10} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    {isSubmitting ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    ) : (
+                                        <>Submit Request <FaArrowRight size={10} className="group-hover/btn:translate-x-1 transition-transform" /></>
+                                    )}
                                 </button>
                             </form>
                         </div>
