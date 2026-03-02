@@ -39,7 +39,7 @@ const ProjectCard = ({ project }) => {
                 </div>
                 {project.owner && (
                     <img
-                        src={project.owner.profile_image ? `${import.meta.env.VITE_STORAGE_URL}/${project.owner.profile_image}` : "https://ui-avatars.com/api/?name=" + project.owner.name}
+                        src={project.owner.profile_image ? (project.owner.profile_image.startsWith('http') ? project.owner.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${project.owner.profile_image}`) : "https://ui-avatars.com/api/?name=" + project.owner.name}
                         alt={project.owner.name}
                         className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
                         title={`Owner: ${project.owner.name}`}

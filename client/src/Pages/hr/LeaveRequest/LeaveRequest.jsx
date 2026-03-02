@@ -109,11 +109,13 @@ const Leave = () => {
 
             {/* Header Section */}
             <header className="max-w-7xl mx-auto mb-6 relative z-10">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Time Off</h1>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Leave Management Protocol</p>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Time Off</h1>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Leave Management Protocol</p>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -258,7 +260,7 @@ const Leave = () => {
                                                     </p>
                                                     {leave.document_path && (
                                                         <a
-                                                            href={`${import.meta.env.VITE_STORAGE_URL}/${leave.document_path}`}
+                                                            href={leave.document_path.startsWith('http') ? leave.document_path : `${import.meta.env.VITE_STORAGE_URL}/${leave.document_path}`}
                                                             target="_blank" rel="noopener noreferrer"
                                                             className="text-[8px] text-slate-900 font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded-full inline-flex items-center mt-1 hover:bg-slate-900 hover:text-white transition-colors"
                                                         >

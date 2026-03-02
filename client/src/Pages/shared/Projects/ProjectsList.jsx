@@ -64,7 +64,7 @@ const ProjectsList = () => {
     return (
         <div className="p-4 lg:p-8 space-y-6 bg-gray-50 min-h-screen">
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Projects</h1>
                     <p className="text-gray-500">Manage your projects and tasks</p>

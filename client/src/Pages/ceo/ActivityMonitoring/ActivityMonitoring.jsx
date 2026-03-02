@@ -80,24 +80,24 @@ const ActivityMonitoring = () => {
                     <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Activity Logs</h1>
                     <p className="text-sm text-slate-500">Monitor employee work progress and task duration.</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <div className="relative group">
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <div className="relative group flex-1 md:flex-none">
                         <input
                             type="text"
-                            className="w-64 h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-xs font-medium text-slate-800 placeholder:text-slate-300"
+                            className="w-full md:w-64 h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-xs font-medium text-slate-800 placeholder:text-slate-300"
                             placeholder="Search employees..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-accent transition-colors" size={12} />
                     </div>
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm flex-1 md:flex-none">
                         <FaCalendarAlt className="text-blue-500" size={14} />
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="border-none opacity-80 outline-none text-sm font-semibold text-slate-700 pointer-events-auto"
+                            className="border-none opacity-80 outline-none text-sm font-semibold text-slate-700 pointer-events-auto w-full"
                         />
                     </div>
                 </div>
@@ -127,7 +127,11 @@ const ActivityMonitoring = () => {
                                 <div className="flex items-center gap-4 flex-1">
                                     <div className="relative">
                                         {group.user.profile_image ? (
-                                            <img src={`${import.meta.env.VITE_STORAGE_URL}/${group.user.profile_image}`} className="w-14 h-14 rounded-2xl object-cover shadow-md border-2 border-white" alt="" />
+                                            <img
+                                                src={group.user.profile_image.startsWith('http') ? group.user.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${group.user.profile_image}`}
+                                                className="w-14 h-14 rounded-2xl object-cover shadow-md border-2 border-white"
+                                                alt=""
+                                            />
                                         ) : (
                                             <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-300 border border-slate-200 shadow-inner">
                                                 <FaUserCircle size={30} />
@@ -141,13 +145,13 @@ const ActivityMonitoring = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
-                                    <div className="px-4 py-2 bg-blue-50 border border-blue-100 rounded-2xl text-center min-w-[100px]">
-                                        <div className="text-xl font-black text-blue-600 leading-none">{group.logs.length}</div>
+                                <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto">
+                                    <div className="px-4 py-2 bg-blue-50 border border-blue-100 rounded-2xl text-center min-w-[80px] md:min-w-[100px] flex-1 md:flex-none">
+                                        <div className="text-lg md:text-xl font-black text-blue-600 leading-none">{group.logs.length}</div>
                                         <div className="text-[9px] font-black text-blue-400 uppercase tracking-widest mt-1">Logs</div>
                                     </div>
-                                    <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-center min-w-[120px]">
-                                        <div className="text-xl font-black text-white leading-none whitespace-nowrap">{calculateTotalWork(group.logs)}</div>
+                                    <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-center min-w-[100px] md:min-w-[120px] flex-1 md:flex-none">
+                                        <div className="text-lg md:text-xl font-black text-white leading-none whitespace-nowrap">{calculateTotalWork(group.logs)}</div>
                                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Total Time</div>
                                     </div>
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-500 bg-slate-50 border border-slate-100 ${expandedUsers[group.user.id] ? 'rotate-180 bg-blue-50 border-blue-200' : ''}`}>

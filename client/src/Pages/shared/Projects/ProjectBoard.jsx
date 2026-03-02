@@ -196,7 +196,7 @@ const ProjectBoard = () => {
                         {project?.members?.slice(0, 5).map(m => (
                             <img
                                 key={m.id}
-                                src={m.profile_image ? `${import.meta.env.VITE_STORAGE_URL}/${m.profile_image}` : `https://ui-avatars.com/api/?name=${m.name}`}
+                                src={m.profile_image ? (m.profile_image.startsWith('http') ? m.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${m.profile_image}`) : `https://ui-avatars.com/api/?name=${m.name}`}
                                 className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white"
                                 title={m.name}
                             />

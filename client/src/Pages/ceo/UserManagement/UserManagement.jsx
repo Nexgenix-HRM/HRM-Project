@@ -78,7 +78,7 @@ const UserManagement = () => {
         if (user.profile_image) {
             return (
                 <img
-                    src={`${import.meta.env.VITE_STORAGE_URL}/${user.profile_image}`}
+                    src={user.profile_image.startsWith('http') ? user.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${user.profile_image}`}
                     alt={user.name}
                     className="w-9 h-9 rounded-lg object-cover shadow-sm"
                 />

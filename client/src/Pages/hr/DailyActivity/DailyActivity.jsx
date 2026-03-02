@@ -52,8 +52,8 @@ const DailyActivity = () => {
 
     const calculateTotalHours = () => {
         let totalMinutes = 0;
-        activities.forEach(activity => {
-            if (activity.start_time && activity.end_time) {
+        (activities || []).forEach(activity => {
+            if (activity && activity.start_time && activity.end_time) {
                 const start = new Date(`1970-01-01T${activity.start_time}`);
                 const end = new Date(`1970-01-01T${activity.end_time}`);
                 totalMinutes += (end - start) / 60000;
@@ -78,11 +78,13 @@ const DailyActivity = () => {
         <div className="p-4 lg:p-8">
 
             <header className="mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Activity Log</h1>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Time Slot Audit Protocol</p>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Activity Log</h1>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Time Slot Audit Protocol</p>
+                        </div>
                     </div>
                 </div>
             </header>

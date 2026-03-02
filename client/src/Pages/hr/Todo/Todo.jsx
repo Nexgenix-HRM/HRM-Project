@@ -78,11 +78,13 @@ const Todo = () => {
         <div className="p-4 lg:p-8">
             {/* Branded Header */}
             <header className="mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Work Submission</h1>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Operational Report Gateway</p>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Work Submission</h1>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Operational Report Gateway</p>
+                        </div>
                     </div>
                 </div>
             </header>

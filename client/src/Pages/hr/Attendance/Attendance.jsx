@@ -63,11 +63,13 @@ const Attendance = () => {
         <div className="p-4 lg:p-8 max-w-4xl mx-auto">
 
             <header className="mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Time & Attendance</h1>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Access Registry Protocol</p>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Time & Attendance</h1>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Access Registry Protocol</p>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -130,7 +132,7 @@ const Attendance = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                         <thead className="bg-slate-50/50">
-                            <tr>
+                            <tr className="whitespace-nowrap">
                                 <th className="px-6 py-3 text-[9px] font-black uppercase text-slate-400 text-left tracking-widest border-b border-slate-100">Date</th>
                                 <th className="px-6 py-3 text-[9px] font-black uppercase text-slate-400 text-left tracking-widest border-b border-slate-100">In-Time</th>
                                 <th className="px-6 py-3 text-[9px] font-black uppercase text-slate-400 text-left tracking-widest border-b border-slate-100">Out-Time</th>
@@ -139,7 +141,7 @@ const Attendance = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {logs.map(log => (
-                                <tr key={log.id} className="group hover:bg-slate-50/10 transition-colors">
+                                <tr key={log.id} className="group hover:bg-slate-50/10 transition-colors whitespace-nowrap">
                                     <td className="px-6 py-3 font-bold text-slate-700 text-xs">{log.date}</td>
                                     <td className="px-6 py-3 font-semibold text-slate-600 text-[11px]">
                                         <div className="flex items-center gap-2">

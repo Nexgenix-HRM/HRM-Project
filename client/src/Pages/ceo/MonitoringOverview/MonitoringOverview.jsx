@@ -68,12 +68,12 @@ const MonitoringOverview = () => {
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Monitoring</h1>
                 </div>
-                <div className="flex items-center gap-2 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 shadow-inner">
+                <div className="flex flex-wrap items-center gap-2 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 shadow-inner w-full md:w-auto">
                     {/* Search */}
-                    <div className="relative group">
+                    <div className="relative group flex-1 md:flex-none">
                         <input
                             type="text"
-                            className="w-40 h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-[11px] font-bold text-slate-800 placeholder:text-slate-300"
+                            className="w-full md:w-40 h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all outline-none text-[11px] font-bold text-slate-800 placeholder:text-slate-300"
                             placeholder="Search name..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -82,11 +82,11 @@ const MonitoringOverview = () => {
                     </div>
 
                     {/* Attendance Filter */}
-                    <div className="relative">
+                    <div className="relative flex-1 md:flex-none">
                         <select
                             value={filters.attendance}
                             onChange={(e) => setFilters({ ...filters, attendance: e.target.value })}
-                            className="h-9 pl-3 pr-8 bg-white border border-slate-200 rounded-xl text-[11px] font-black text-slate-700 outline-none focus:border-emerald-500 transition-all cursor-pointer shadow-sm w-40 appearance-none"
+                            className="h-9 pl-3 pr-8 bg-white border border-slate-200 rounded-xl text-[11px] font-black text-slate-700 outline-none focus:border-emerald-500 transition-all cursor-pointer shadow-sm w-full md:w-40 appearance-none"
                         >
                             <option value="all">ALL STATUS</option>
                             <option value="present">PRESENT</option>
@@ -98,17 +98,17 @@ const MonitoringOverview = () => {
                     </div>
 
                     {/* Date Picker */}
-                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 h-9 rounded-xl border border-slate-200 shadow-sm group hover:border-blue-400 transition-all">
+                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 h-9 rounded-xl border border-slate-200 shadow-sm group hover:border-blue-400 transition-all flex-1 md:flex-none">
                         <FaCalendarAlt className="text-blue-500 group-hover:scale-110 transition-transform" size={12} />
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="border-none outline-none text-[11px] font-black text-slate-700 bg-transparent pointer-events-auto cursor-pointer"
+                            className="border-none outline-none text-[11px] font-black text-slate-700 bg-transparent pointer-events-auto cursor-pointer w-full"
                         />
                     </div>
 
-                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
+                    <div className="hidden md:block w-px h-6 bg-slate-200 mx-1"></div>
 
                     {/* Reset Button */}
                     <button
@@ -116,7 +116,7 @@ const MonitoringOverview = () => {
                             setFilters({ attendance: 'all' });
                             setSearchQuery('');
                         }}
-                        className="h-9 px-4 bg-white text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all uppercase tracking-widest"
+                        className="h-9 px-4 bg-white text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all uppercase tracking-widest flex-1 md:flex-none"
                     >
                         Reset
                     </button>
@@ -172,7 +172,11 @@ const MonitoringOverview = () => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             {emp.profile_image ? (
-                                                <img src={`${import.meta.env.VITE_STORAGE_URL}/${emp.profile_image}`} className="w-9 h-9 rounded-xl object-cover shadow-sm" alt="" />
+                                                <img
+                                                    src={emp.profile_image.startsWith('http') ? emp.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${emp.profile_image}`}
+                                                    className="w-9 h-9 rounded-xl object-cover shadow-sm"
+                                                    alt=""
+                                                />
                                             ) : (
                                                 <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-300">
                                                     <FaUserCircle size={20} />
