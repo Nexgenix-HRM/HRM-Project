@@ -17,12 +17,14 @@ class TaskAttachmentController extends Controller
         ]);
 
         $file = $request->file('file');
+        $extension = strtolower($file->getClientOriginalExtension());
+        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
         
         $uploadedFileUrl = cloudinary()->uploadApi()->upload($file->getRealPath(), [
             'folder' => 'task-attachments',
             'use_filename' => true,
             'unique_filename' => true,
-            'resource_type' => 'auto'
+            'resource_type' => $isImage ? 'image' : 'raw'
         ])['secure_url'];
 
         $attachment = TaskAttachment::create([

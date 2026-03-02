@@ -123,25 +123,27 @@ const Leave = () => {
                 </div>
             </header>
 
-            <div className="fixed top-1 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-[2000] pointer-events-none">
+            <div className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-[2000] pointer-events-none">
                 {error && (
-                    <div className="mb-3 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center justify-between gap-3 text-rose-600 text-xs shadow-xl pointer-events-auto animate-in slide-in-from-top-4 duration-300">
+                    <div className="mb-3 p-4 bg-rose-50 border-2 border-rose-100 rounded-2xl flex items-center justify-between gap-3 text-rose-600 text-xs shadow-2xl pointer-events-auto">
                         <div className="flex items-center gap-3">
-                            <FaInfoCircle className="shrink-0" /> {error}
+                            <FaInfoCircle className="shrink-0" size={16} />
+                            <span className="font-semibold">{error}</span>
                         </div>
-                        <button onClick={() => setError('')} className="p-1 hover:bg-rose-100 rounded-lg transition-colors">
-                            <FaTimes size={10} />
+                        <button onClick={() => setError('')} className="p-1.5 hover:bg-rose-100 rounded-xl transition-colors">
+                            <FaTimes size={12} />
                         </button>
                     </div>
                 )}
 
                 {successMessage && (
-                    <div className="mb-3 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-between gap-3 text-emerald-600 text-xs shadow-xl pointer-events-auto animate-in slide-in-from-top-4 duration-300">
+                    <div className="mb-3 p-4 bg-emerald-50 border-2 border-emerald-100 rounded-2xl flex items-center justify-between gap-3 text-emerald-600 text-xs shadow-2xl pointer-events-auto">
                         <div className="flex items-center gap-3">
-                            <FaCheckCircle className="shrink-0" /> {successMessage}
+                            <FaCheckCircle className="shrink-0" size={16} />
+                            <span className="font-semibold">{successMessage}</span>
                         </div>
-                        <button onClick={() => setSuccessMessage('')} className="p-1 hover:bg-emerald-100 rounded-lg transition-colors">
-                            <FaTimes size={10} />
+                        <button onClick={() => setSuccessMessage('')} className="p-1.5 hover:bg-emerald-100 rounded-xl transition-colors">
+                            <FaTimes size={12} />
                         </button>
                     </div>
                 )}
