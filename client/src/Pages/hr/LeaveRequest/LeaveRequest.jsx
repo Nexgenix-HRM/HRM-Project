@@ -68,7 +68,7 @@ const Leave = () => {
 
             setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
-            console.error(error);
+            console.error('Submission error:', error);
             setError(error.message || 'Error submitting leave request');
         } finally {
             setIsSubmitting(false);
@@ -242,10 +242,13 @@ const Leave = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`w-full h-11 bg-accent text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group/btn shadow-md shadow-accent/10 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                className={`w-full h-11 bg-accent text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group/btn shadow-md shadow-accent/10 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                                 {isSubmitting ? (
-                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        <span className="animate-pulse">Uploading...</span>
+                                    </div>
                                 ) : (
                                     <>Submit Request <FaArrowRight size={10} className="group-hover/btn:translate-x-1 transition-transform" /></>
                                 )}
