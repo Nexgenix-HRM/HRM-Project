@@ -45,23 +45,11 @@ class LeaveRequestController extends Controller
         if ($request->hasFile('document')) {
             try {
                 $file = $request->file('document');
-                try {
-                    // Try auto first (best for viewing in browser)
-                    $path = cloudinary()->uploadApi()->upload($file->getRealPath(), [
-                        'folder' => 'leaves',
-                        'resource_type' => 'auto',
-                        'use_filename' => true,
-                        'unique_filename' => true
-                    ])['secure_url'];
-                } catch (\Exception $e) {
-                    // If auto fails (e.g. Invalid PDF structure), fallback to raw
-                    $path = cloudinary()->uploadApi()->upload($file->getRealPath(), [
-                        'folder' => 'leaves',
-                        'resource_type' => 'raw',
-                        'use_filename' => true,
-                        'unique_filename' => true
-                    ])['secure_url'];
-                }
+                $path = cloudinary()->upload($file->getRealPath(), [
+                    'folder' => 'leaves',
+                    'use_filename' => true,
+                    'unique_filename' => true
+                ])->getSecureUrl();
             } catch (\Exception $e) {
                 \Log::error("Cloudinary upload failed for leave request: " . $e->getMessage());
                 return response()->json([
