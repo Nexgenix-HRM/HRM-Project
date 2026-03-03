@@ -17,7 +17,10 @@ class LeaveRequestController extends Controller
         $user = Auth::user();
         
         // Employees see only their own requests
-        return LeaveRequest::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        return LeaveRequest::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
     }
 
     // Get only the authenticated user's own leave requests
@@ -25,6 +28,7 @@ class LeaveRequestController extends Controller
     {
         return LeaveRequest::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
+            ->limit(10)
             ->get();
     }
 

@@ -262,74 +262,73 @@ const Leave = () => {
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200/50 overflow-hidden">
                         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                             <div>
-                                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                    <FaHistory className="text-slate-300" size={16} />
-                                    My Leave History
-                                </h3>
-                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">{leaves.length} Entries</p>
-                            </div>
+                                <FaHistory className="text-slate-300" size={16} />
+                                Latest 10 Requests
+                            </h3>
+                            <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">{leaves.length} Total</p>
                         </div>
+                    </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full border-separate border-spacing-y-2 px-4">
-                                <thead>
-                                    <tr className="text-slate-400 uppercase text-[9px] font-black tracking-widest">
-                                        <th className="px-4 pb-1 text-left">Period</th>
-                                        <th className="px-4 pb-1 text-left">Context</th>
-                                        <th className="px-4 pb-1 text-left">Status</th>
+                    <div className="overflow-x-auto">
+                        <table className="w-full border-separate border-spacing-y-2 px-4">
+                            <thead>
+                                <tr className="text-slate-400 uppercase text-[9px] font-black tracking-widest">
+                                    <th className="px-4 pb-1 text-left">Period</th>
+                                    <th className="px-4 pb-1 text-left">Context</th>
+                                    <th className="px-4 pb-1 text-left">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-50/50">
+                                {leaves.map(leave => (
+                                    <tr key={leave.id} className="group hover:bg-slate-50/50 transition-all">
+                                        <td className="py-3 px-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-slate-50 rounded-lg border border-slate-100 text-slate-400">
+                                                    <FaCalendarAlt size={12} />
+                                                </div>
+                                                <div>
+                                                    <div className="text-[11px] font-bold text-slate-700">{leave.start_date}</div>
+                                                    <div className="text-[9px] text-slate-400 font-bold uppercase">
+                                                        to <span className="text-slate-500">{leave.end_date}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-3 px-4">
+                                            <div className="max-w-[150px]">
+                                                <p className="text-[11px] text-slate-600 line-clamp-1 italic" title={leave.reason}>
+                                                    "{leave.reason}"
+                                                </p>
+                                                {leave.document_path && (
+                                                    <a
+                                                        href={leave.document_path.startsWith('http') ? leave.document_path : `${import.meta.env.VITE_STORAGE_URL}/${leave.document_path}`}
+                                                        target="_blank" rel="noopener noreferrer"
+                                                        className="text-[8px] text-slate-900 font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded-full inline-flex items-center mt-1 hover:bg-slate-900 hover:text-white transition-colors"
+                                                    >
+                                                        <FaFileAlt size={8} className="mr-1 opacity-50" /> Verify
+                                                    </a>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="py-3 px-4">
+                                            <StatusBadge status={leave.status} />
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50/50">
-                                    {leaves.map(leave => (
-                                        <tr key={leave.id} className="group hover:bg-slate-50/50 transition-all">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100 text-slate-400">
-                                                        <FaCalendarAlt size={12} />
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-[11px] font-bold text-slate-700">{leave.start_date}</div>
-                                                        <div className="text-[9px] text-slate-400 font-bold uppercase">
-                                                            to <span className="text-slate-500">{leave.end_date}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4">
-                                                <div className="max-w-[150px]">
-                                                    <p className="text-[11px] text-slate-600 line-clamp-1 italic" title={leave.reason}>
-                                                        "{leave.reason}"
-                                                    </p>
-                                                    {leave.document_path && (
-                                                        <a
-                                                            href={leave.document_path.startsWith('http') ? leave.document_path : `${import.meta.env.VITE_STORAGE_URL}/${leave.document_path}`}
-                                                            target="_blank" rel="noopener noreferrer"
-                                                            className="text-[8px] text-slate-900 font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded-full inline-flex items-center mt-1 hover:bg-slate-900 hover:text-white transition-colors"
-                                                        >
-                                                            <FaFileAlt size={8} className="mr-1 opacity-50" /> Verify
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4">
-                                                <StatusBadge status={leave.status} />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {leaves.length === 0 && (
-                                        <tr>
-                                            <td colSpan={3} className="py-16 text-center">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">No Records</p>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                                ))}
+                                {leaves.length === 0 && (
+                                    <tr>
+                                        <td colSpan={3} className="py-16 text-center">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">No Records</p>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+        </div >
     );
 };
 

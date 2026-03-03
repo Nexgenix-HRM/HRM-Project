@@ -264,9 +264,9 @@ const Leave = () => {
                             <div>
                                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                                     <FaHistory className="text-slate-300" size={16} />
-                                    {userRole === 'employee' ? 'Request History' : 'Applications'}
+                                    {userRole === 'employee' ? 'Latest 10 Requests' : 'Latest 10 Applications'}
                                 </h3>
-                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">{leaves.length} Entries</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">{leaves.length} Total</p>
                             </div>
                         </div>
 
