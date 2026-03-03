@@ -45,10 +45,9 @@ class LeaveRequestController extends Controller
         if ($request->hasFile('document')) {
             try {
                 $file = $request->file('document');
-                $path = cloudinary()->upload($file->getRealPath(), [
+                $path = cloudinary()->upload($file, [
                     'folder' => 'leaves',
-                    'use_filename' => true,
-                    'unique_filename' => true
+                    'resource_type' => 'auto'
                 ])->getSecureUrl();
             } catch (\Exception $e) {
                 \Log::error("Cloudinary upload failed for leave request: " . $e->getMessage());
