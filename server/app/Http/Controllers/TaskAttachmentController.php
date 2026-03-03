@@ -19,12 +19,25 @@ class TaskAttachmentController extends Controller
         $file = $request->file('file');
         
         try {
-            $uploadedFileUrl = cloudinary()->uploadApi()->upload($file->getRealPath(), [
-                'folder' => 'task-attachments',
-                'resource_type' => 'auto',
-                'use_filename' => true,
-                'unique_filename' => true
-            ])['secure_url'];
+            try {
+                // Try auto first (allows inline viewing if Cloudinary accepts it)
+                $uploadedFileUrl = cloudinary()->uploadApi()->upload($file->getRealPath(), [
+                    'folder' => 'task-attachments',
+                    'resource_type' => 'auto',
+                    'use_filename' => true,
+                    'unique_filename' => true
+                ])['secure_url'];
+            } catch (\Exception $e) {
+                // Fallback to raw with forced extension preservation
+                \Log::warning("Cloudinary auto-upload failed for task, falling back to raw: " . $e->getMessage());
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $file->getClientOriginalExtension() ?: 'pdf';
+                $uploadedFileUrl = cloudinary()->uploadApi()->upload($file->getRealPath(), [
+                    'folder' => 'task-attachments',
+                    'resource_type' => 'raw',
+                    'public_id' => $originalName . '_' . uniqid() . '.' . $extension
+                ])['secure_url'];
+            }
         } catch (\Exception $e) {
             \Log::error("Cloudinary upload failed for task attachment: " . $e->getMessage());
             return response()->json([
