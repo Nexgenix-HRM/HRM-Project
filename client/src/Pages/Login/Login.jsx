@@ -54,7 +54,14 @@ const Login = () => {
                     <div className="tech-shape shape-1 absolute bg-purple-50/30 rounded-full blur-[60px]" style={{ width: '600px', height: '600px', top: '-200px', right: '-200px' }}></div>
                     <div className="tech-shape shape-2 absolute bg-purple-50/30 rounded-full blur-[60px]" style={{ width: '400px', height: '400px', bottom: '-100px', left: '-100px' }}></div>
 
-                    <div className="relative z-10 my-auto">
+                    <div className="relative z-10 mt-12">
+                        <div className="mb-10 animate-fade-in">
+                            <img
+                                src={logo}
+                                alt="NexGenix Logo"
+                                className="h-24 w-auto object-contain drop-shadow-[0_10px_10px_rgba(112,48,160,0.1)]"
+                            />
+                        </div>
                         <h1 className="hero-text text-[4.5rem] font-black leading-none tracking-tighter text-slate-900 mb-6 animate-fade-in delay-100">
                             HRM<br />
                             NexGenix
@@ -122,18 +129,6 @@ const Login = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-2 cursor-pointer group">
-                                    <div className="relative w-4 h-4 bg-slate-100 border border-slate-200 rounded-md group-hover:border-accent transition-colors">
-                                        <input type="checkbox" id="rememberMe" className="peer absolute inset-0 opacity-0 cursor-pointer" />
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
-                                            <div className="w-2 h-2 bg-accent rounded-sm"></div>
-                                        </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-slate-500 tracking-tight">Remember for 30 days</span>
-                                </label>
-                                <a href="#" className="text-xs font-bold text-accent hover:underline decoration-2 underline-offset-4">Forgot password?</a>
-                            </div>
 
                             <button
                                 type="submit"
@@ -143,9 +138,6 @@ const Login = () => {
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover/btn:animate-shimmer"></div>
                             </button>
 
-                            <p className="text-center text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                                Don't have an account? <a href="#" className="text-accent hover:text-slate-900 transition-colors ml-1">Contact Support</a>
-                            </p>
                         </form>
                     </div>
                 </div>
