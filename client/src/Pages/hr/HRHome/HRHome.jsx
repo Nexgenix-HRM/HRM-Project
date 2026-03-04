@@ -12,7 +12,6 @@ const HRHome = () => {
         presentToday: 0,
         pendingLeaves: 0,
         recentHires: [],
-        whosOut: [],
         loading: true
     });
 
@@ -32,18 +31,11 @@ const HRHome = () => {
                 // Sort and get last 3 registered users as "Recent Hires"
                 const sortedUsers = [...filteredUsers].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3);
 
-                // Get employees with approved leave for today
-                const outToday = leavesRes.data.filter(l => {
-                    if (l.status !== 'approved') return false;
-                    return today >= l.start_date && today <= l.end_date;
-                });
-
                 setData({
                     totalWorkforce: filteredUsers.length,
                     presentToday: overviewRes.data?.summary?.attendance?.present || 0,
                     pendingLeaves: leavesRes.data.filter(l => l.status === 'pending').length,
                     recentHires: sortedUsers,
-                    whosOut: outToday,
                     loading: false
                 });
             } catch (error) {
@@ -106,7 +98,7 @@ const HRHome = () => {
                         <div className="w-10 h-10 bg-accent text-white rounded-lg flex items-center justify-center mb-4 shadow-sm">
                             <FaUserClock size={16} />
                         </div>
-                        <h6 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Queue Status</h6>
+                        <h6 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Pending Leaves</h6>
                         <h2 className="text-2xl font-black text-white tracking-tighter">
                             {data.loading ? "..." : `${data.pendingLeaves} Pending`}
                         </h2>
@@ -114,7 +106,7 @@ const HRHome = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 gap-6 mb-8">
                 {/* Recent Hires - Relatable Content */}
                 <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6">
                     <div className="flex items-center gap-2 mb-4 border-b border-slate-50 pb-3">
@@ -130,9 +122,17 @@ const HRHome = () => {
                             data.recentHires.map(user => (
                                 <div key={user.id} className="flex items-center justify-between group">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-200">
-                                            {user.name.charAt(0)}
-                                        </div>
+                                        {user.profile_image ? (
+                                            <img
+                                                src={user.profile_image.startsWith('http') ? user.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${user.profile_image}`}
+                                                className="w-9 h-9 rounded-xl object-cover border border-slate-200 shadow-sm"
+                                                alt={user.name}
+                                            />
+                                        ) : (
+                                            <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-200">
+                                                {user.name.charAt(0)}
+                                            </div>
+                                        )}
                                         <div>
                                             <div className="text-xs font-bold text-slate-900">{user.name}</div>
                                             <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wide">{user.designation || user.role}</div>
@@ -145,42 +145,6 @@ const HRHome = () => {
                             ))
                         ) : (
                             <div className="text-[10px] text-slate-400 font-bold uppercase py-2">No recent hires found</div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Who's Out Today - Functional Content */}
-                <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6">
-                    <div className="flex items-center gap-2 mb-4 border-b border-slate-50 pb-3">
-                        <div className="p-2 bg-rose-50 text-rose-600 rounded-lg">
-                            <FaPlaneDeparture size={14} />
-                        </div>
-                        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Out of Office</h3>
-                    </div>
-                    <div className="space-y-4">
-                        {data.loading ? (
-                            <div className="text-[10px] text-slate-400 font-bold uppercase py-2">Scanning registry...</div>
-                        ) : data.whosOut.length > 0 ? (
-                            data.whosOut.map(l => (
-                                <div key={l.id} className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center font-bold text-xs border border-rose-100">
-                                            {l.name ? l.name.charAt(0) : 'E'}
-                                        </div>
-                                        <div>
-                                            <div className="text-xs font-bold text-slate-900">{l.name || 'Anonymous'}</div>
-                                            <div className="text-[9px] text-rose-400 font-bold uppercase tracking-wide">On Approved Leave</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-[9px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
-                                        Starts {l.start_date}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="h-full flex flex-col items-center justify-center py-6">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">All Personnel Present</p>
-                            </div>
                         )}
                     </div>
                 </div>
