@@ -49,6 +49,15 @@ class ProjectController extends Controller
 
         if ($request->has('members')) {
             $project->members()->attach($request->members);
+
+            // Notify members
+            $members = User::whereIn('id', $request->members)->get();
+            $notification = new \App\Notifications\ProjectAssignedNotification($project, Auth::user());
+            foreach ($members as $member) {
+                if ($member->id !== Auth::id()) {
+                    $member->notify($notification);
+                }
+            }
         }
         
         // Add creator to members if not already there
@@ -144,6 +153,12 @@ class ProjectController extends Controller
         ]);
 
         $project->members()->syncWithoutDetaching([$request->user_id]);
+
+        // Notify member
+        if ($request->user_id !== Auth::id()) {
+            $user = User::findOrFail($request->user_id);
+            $user->notify(new \App\Notifications\ProjectAssignedNotification($project, Auth::user()));
+        }
 
         return response()->json($project->load('members'));
     }

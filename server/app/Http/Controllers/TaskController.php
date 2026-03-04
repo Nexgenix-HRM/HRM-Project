@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\TaskList;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
@@ -87,8 +88,20 @@ class TaskController extends Controller
         $task->update($request->only(['title', 'description', 'priority', 'deadline', 'list_id', 'position']));
 
         if ($request->has('assignees')) {
+            $currentAssignees = $task->assignees()->pluck('users.id')->toArray();
             $task->assignees()->sync($request->assignees);
-            // TODO: Send notification to new assignees
+            
+            // Detect new assignees
+            $newAssigneeIds = array_diff($request->assignees, $currentAssignees);
+            if (!empty($newAssigneeIds)) {
+                $newAssignees = User::whereIn('id', $newAssigneeIds)->get();
+                $notification = new \App\Notifications\TaskAssignedNotification($task, Auth::user());
+                foreach ($newAssignees as $assignee) {
+                    if ($assignee->id !== Auth::id()) {
+                        $assignee->notify($notification);
+                    }
+                }
+            }
         }
 
         return response()->json($task->load(['assignees', 'comments.user', 'attachments.user', 'subtasks', 'creator']));

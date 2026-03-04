@@ -4,14 +4,13 @@ import {
     FaTimes, FaUser, FaTag, FaClock, FaCheckSquare, FaAlignLeft,
     FaComment, FaPlus, FaTrash, FaCheck, FaEdit, FaAt,
     FaExclamationCircle, FaPaperclip, FaFileImage, FaFilePdf,
-    FaFileWord, FaFile, FaDownload, FaUpload
+    FaFileWord, FaFile, FaDownload, FaUpload, FaLink
 } from 'react-icons/fa';
 
 const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }) => {
     const [commentText, setCommentText] = useState('');
     const [comments, setComments] = useState([]);
     const [localTask, setLocalTask] = useState(task);
-    const [subtaskTitle, setSubtaskTitle] = useState('');
     const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [descriptionText, setDescriptionText] = useState('');
@@ -22,10 +21,10 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
     const [showMentionResults, setShowMentionResults] = useState(false);
     const [mentionSearch, setMentionSearch] = useState('');
     const [previewImageUrl, setPreviewImageUrl] = useState(null);
-    const [mentionContext, setMentionContext] = useState(null); // 'description' or 'subtask'
+    const [showLinkInput, setShowLinkInput] = useState(false);
+    const [linkInput, setLinkInput] = useState({ text: '', url: '' });
 
     const textareaRef = useRef(null);
-    const subtaskInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     const userId = localStorage.getItem('userId') || currentUser.id;
@@ -53,14 +52,6 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
     const handleDescriptionChange = (e) => {
         const value = e.target.value;
         setDescriptionText(value);
-        setMentionContext('description');
-        checkForMention(value, e.target.selectionStart);
-    };
-
-    const handleSubtaskSearch = (e) => {
-        const value = e.target.value;
-        setSubtaskTitle(value);
-        setMentionContext('subtask');
         checkForMention(value, e.target.selectionStart);
     };
 
@@ -82,10 +73,9 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
     };
 
     const insertMention = (member) => {
-        const isDescription = mentionContext === 'description';
-        const targetRef = isDescription ? textareaRef : subtaskInputRef;
-        const currentText = isDescription ? descriptionText : subtaskTitle;
-        const setText = isDescription ? setDescriptionText : setSubtaskTitle;
+        const targetRef = textareaRef;
+        const currentText = descriptionText;
+        const setText = setDescriptionText;
 
         const cursorPosition = targetRef.current.selectionStart;
         const lastAtIndex = currentText.slice(0, cursorPosition).lastIndexOf('@');
@@ -118,6 +108,90 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
         } catch (error) {
             console.error('Error updating description:', error);
         }
+    };
+
+    const handleInsertLink = () => {
+        const selectionStart = textareaRef.current?.selectionStart || 0;
+        const selectionEnd = textareaRef.current?.selectionEnd || 0;
+        const selectedText = descriptionText.substring(selectionStart, selectionEnd);
+
+        setLinkInput({
+            text: selectedText,
+            url: ''
+        });
+        setShowLinkInput(true);
+    };
+
+    const confirmInsertLink = () => {
+        if (!linkInput.url) return;
+
+        const selectionStart = textareaRef.current?.selectionStart || 0;
+        const selectionEnd = textareaRef.current?.selectionEnd || 0;
+
+        const linkText = linkInput.text || linkInput.url;
+        const markdownLink = `[${linkText}](${linkInput.url})`;
+
+        const newText = descriptionText.substring(0, selectionStart) + markdownLink + descriptionText.substring(selectionEnd);
+        setDescriptionText(newText);
+        setShowLinkInput(false);
+        setLinkInput({ text: '', url: '' });
+
+        setTimeout(() => {
+            if (textareaRef.current) {
+                textareaRef.current.focus();
+                const newPos = selectionStart + markdownLink.length;
+                textareaRef.current.setSelectionRange(newPos, newPos);
+            }
+        }, 10);
+    };
+
+    const closeLinkInput = () => {
+        setShowLinkInput(false);
+        setLinkInput({ text: '', url: '' });
+    };
+
+    const renderDescriptionWithHighlights = (text) => {
+        if (!text) return "Add a more detailed description...";
+
+        // Escape special characters in names for regex usage
+        const escapedNames = (projectMembers || [])
+            .map(m => m.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+            .filter(name => name.length > 0);
+
+        // Sort names by length descending to match longest names first (preventing partial matches)
+        const sortedNames = [...escapedNames].sort((a, b) => b.length - a.length);
+        const mentionRegex = sortedNames.length > 0 ? `@(?:${sortedNames.join('|')})` : '@\\w+';
+        const linkRegex = '\\[.*?\\]\\(.*?\\)';
+
+        const combinedRegex = new RegExp(`(${mentionRegex}|${linkRegex})`, 'g');
+        const parts = text.split(combinedRegex);
+
+        return parts.map((part, index) => {
+            if (!part) return null;
+
+            if (part.startsWith('@')) {
+                return <span key={index} className="text-blue-600 font-bold">{part}</span>;
+            }
+            if (part.startsWith('[') && part.includes('](')) {
+                const match = part.match(/\[(.*?)\]\((.*?)\)/);
+                if (match) {
+                    const [_, linkText, url] = match;
+                    return (
+                        <a
+                            key={index}
+                            href={url.startsWith('http') ? url : `https://${url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-indigo-600 hover:underline font-bold"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {linkText}
+                        </a>
+                    );
+                }
+            }
+            return part;
+        });
     };
 
     const handleFileUpload = async (e) => {
@@ -202,48 +276,6 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
         }
     };
 
-    const handleAddSubtask = async (e) => {
-        e.preventDefault();
-        if (!subtaskTitle.trim()) return;
-        try {
-            const response = await axiosInstance.post('/subtasks', {
-                task_id: localTask.id,
-                title: subtaskTitle
-            });
-
-            setLocalTask({ ...localTask, subtasks: [...(localTask.subtasks || []), response.data] });
-            setSubtaskTitle('');
-            if (onUpdate) onUpdate();
-        } catch (error) {
-            console.error('Error creating subtask:', error);
-        }
-    };
-
-    const handleToggleSubtask = async (subtaskId, currentStatus) => {
-        try {
-            const response = await axiosInstance.put(`/subtasks/${subtaskId}`, {
-                is_completed: !currentStatus
-            });
-
-            const updatedSubtasks = localTask.subtasks.map(s =>
-                s.id === subtaskId ? response.data : s
-            );
-            setLocalTask({ ...localTask, subtasks: updatedSubtasks });
-            if (onUpdate) onUpdate();
-        } catch (error) {
-            console.error('Error updating subtask:', error);
-        }
-    };
-
-    const handleDeleteSubtask = async (subtaskId) => {
-        try {
-            await axiosInstance.delete(`/subtasks/${subtaskId}`);
-            setLocalTask({ ...localTask, subtasks: localTask.subtasks.filter(s => s.id !== subtaskId) });
-            if (onUpdate) onUpdate();
-        } catch (error) {
-            console.error('Error deleting subtask:', error);
-        }
-    };
 
     const handleToggleAssignee = async (memberId, forceAssign = false) => {
         const currentAssigneeIds = localTask.assignees?.map(u => u.id) || [];
@@ -294,12 +326,9 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
 
     if (!localTask) return null;
 
-    const completedCount = localTask.subtasks?.filter(s => s.is_completed).length || 0;
-    const totalCount = localTask.subtasks?.length || 0;
-    const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-[1100] p-2 md:p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-[2000] p-2 md:p-4">
             <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100">
                 {/* Header */}
                 <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -323,22 +352,91 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
                     {/* Main Content */}
                     <div className="flex-1 space-y-8">
 
-                        {/* Description */}
-                        <div>
-                            <div className="flex items-center gap-2 mb-3 text-gray-800 font-bold">
-                                <FaAlignLeft />
-                                <h3>Description</h3>
+                        {/* Description & Attachments */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2 text-gray-800 font-bold">
+                                    <FaAlignLeft />
+                                    <h3>Description</h3>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={handleInsertLink}
+                                        className="flex items-center gap-2 text-xs bg-slate-50 hover:bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg font-bold border border-slate-200 transition-all shadow-sm"
+                                        title="Insert Link"
+                                    >
+                                        <FaLink />
+                                        Link
+                                    </button>
+                                    <button
+                                        onClick={() => fileInputRef.current.click()}
+                                        className="flex items-center gap-2 text-xs bg-slate-50 hover:bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg font-bold border border-slate-200 transition-all shadow-sm"
+                                    >
+                                        <FaPaperclip className={isUploading ? "animate-pulse" : ""} />
+                                        {isUploading ? "Uploading..." : "Attach"}
+                                    </button>
+                                    <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+                                </div>
                             </div>
+
+                            {showLinkInput && (
+                                <div className="p-4 bg-white border border-indigo-100 rounded-2xl shadow-xl animate-in fade-in zoom-in-95 duration-200 mb-4 space-y-4">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <h4 className="text-xs font-black text-indigo-600 uppercase tracking-widest">Insert Link</h4>
+                                        <button onClick={closeLinkInput} className="text-slate-400 hover:text-slate-600 p-1">
+                                            <FaTimes size={12} />
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Display Text</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. Documentation"
+                                                value={linkInput.text}
+                                                onChange={(e) => setLinkInput({ ...linkInput, text: e.target.value })}
+                                                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">URL</label>
+                                            <input
+                                                type="text"
+                                                placeholder="https://example.com"
+                                                value={linkInput.url}
+                                                onChange={(e) => setLinkInput({ ...linkInput, url: e.target.value })}
+                                                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end gap-2 pt-1">
+                                        <button
+                                            onClick={closeLinkInput}
+                                            className="px-4 py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-all"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            onClick={confirmInsertLink}
+                                            disabled={!linkInput.url}
+                                            className="px-4 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-indigo-200 transition-all"
+                                        >
+                                            Add Link
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
                             {isEditingDescription ? (
                                 <div className="space-y-3 relative">
                                     <textarea
                                         ref={textareaRef}
                                         value={descriptionText}
                                         onChange={handleDescriptionChange}
-                                        className="w-full p-4 text-sm border-2 border-indigo-100 rounded-xl focus:ring-0 focus:border-indigo-400 outline-none min-h-[150px] transition-colors"
+                                        className="w-full p-4 text-sm border-2 border-indigo-100 rounded-xl focus:ring-0 focus:border-indigo-400 outline-none min-h-[150px] transition-colors bg-white shadow-inner"
                                         placeholder="Add more details or use @ to mention teammates..."
                                     />
-                                    {showMentionResults && mentionContext === 'description' && (
+                                    {showMentionResults && (
                                         <div className="absolute top-12 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
                                             {projectMembers.filter(m => m.name.toLowerCase().includes(mentionSearch.toLowerCase())).map(member => (
                                                 <button key={member.id} onClick={() => insertMention(member)} className="w-full flex items-center gap-3 p-3 hover:bg-indigo-50 transition-colors text-left">
@@ -357,134 +455,79 @@ const TaskModal = ({ task, projectName, projectMembers = [], onClose, onUpdate }
                                     </div>
                                 </div>
                             ) : (
-                                <div onClick={() => setIsEditingDescription(true)} className="p-4 bg-gray-50/50 rounded-xl cursor-text hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all">
-                                    <p className="whitespace-pre-wrap text-sm text-gray-600 leading-relaxed font-medium">
-                                        {localTask.description || "Add a more detailed description..."}
+                                <div
+                                    onClick={() => setIsEditingDescription(true)}
+                                    className={`p-4 rounded-xl cursor-text transition-all border-2 ${!localTask.description
+                                        ? 'bg-slate-50 border-slate-200 border-dashed hover:border-indigo-300 hover:bg-slate-100/50'
+                                        : 'bg-slate-50/50 border-slate-100 hover:border-slate-200 hover:bg-slate-50'
+                                        }`}
+                                >
+                                    <p className={`whitespace-pre-wrap text-sm leading-relaxed ${!localTask.description ? 'text-slate-400 font-bold italic' : 'text-gray-600 font-medium'}`}>
+                                        {renderDescriptionWithHighlights(localTask.description)}
                                     </p>
+                                </div>
+                            )}
+
+                            {/* Attachment Previews in the same section */}
+                            {attachments.length > 0 && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                                    {attachments.map(a => (
+                                        <div
+                                            key={a.id}
+                                            className="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg hover:border-accent/30 transition-all duration-300 transform hover:-translate-y-1"
+                                        >
+                                            {isImage(a.file_type) ? (
+                                                <div
+                                                    className="h-28 bg-slate-50 cursor-pointer overflow-hidden relative"
+                                                    onClick={() => setPreviewImageUrl(a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`)}
+                                                >
+                                                    <img
+                                                        src={a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
+                                                        alt={a.file_name}
+                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center transition-colors">
+                                                        <FaDownload className="text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all" />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="h-28 bg-slate-50 flex items-center justify-center text-4xl">
+                                                    {getFileIcon(a.file_type)}
+                                                </div>
+                                            )}
+
+                                            <div className="p-2.5 bg-white border-t border-slate-100">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-[10px] font-black text-slate-800 truncate mb-0.5" title={a.file_name}>{a.file_name}</p>
+                                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">{(a.file_size / 1024).toFixed(1)} KB</p>
+                                                    </div>
+                                                    <div className="flex gap-1">
+                                                        <a
+                                                            href={a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="p-1 text-slate-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-colors"
+                                                            title="Download"
+                                                        >
+                                                            <FaDownload size={10} />
+                                                        </a>
+                                                        <button
+                                                            onClick={() => handleDeleteAttachment(a.id)}
+                                                            className="p-1 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                                            title="Delete"
+                                                        >
+                                                            <FaTrash size={10} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                         </div>
 
-                        {/* Attachments */}
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2 text-gray-800 font-bold">
-                                    <FaPaperclip />
-                                    <h3>Attachments</h3>
-                                </div>
-                                <button onClick={() => fileInputRef.current.click()} className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-bold transition-colors">
-                                    {isUploading ? "Uploading..." : "Add File"}
-                                </button>
-                                <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {attachments.map(a => (
-                                    <div
-                                        key={a.id}
-                                        className="group relative bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-300 transform hover:-translate-y-1"
-                                    >
-                                        {isImage(a.file_type) ? (
-                                            <div
-                                                className="h-32 bg-slate-200 cursor-pointer overflow-hidden relative"
-                                                onClick={() => setPreviewImageUrl(a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`)}
-                                            >
-                                                <img
-                                                    src={a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
-                                                    alt={a.file_name}
-                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center transition-colors">
-                                                    <FaDownload className="text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all" />
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="h-32 bg-slate-100 flex items-center justify-center text-4xl">
-                                                {getFileIcon(a.file_type)}
-                                            </div>
-                                        )}
-
-                                        <div className="p-3 bg-white">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <div className="min-w-0 flex-1">
-                                                    <p className="text-[11px] font-black text-slate-800 truncate mb-0.5" title={a.file_name}>{a.file_name}</p>
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">{(a.file_size / 1024).toFixed(1)} KB</p>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <a
-                                                        href={a.file_path.startsWith('http') ? a.file_path : `${import.meta.env.VITE_STORAGE_URL}/${a.file_path}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="p-1.5 text-slate-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-colors"
-                                                        title="Download"
-                                                    >
-                                                        <FaDownload size={12} />
-                                                    </a>
-                                                    <button
-                                                        onClick={() => handleDeleteAttachment(a.id)}
-                                                        className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
-                                                        title="Delete"
-                                                    >
-                                                        <FaTrash size={12} />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Subtasks */}
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2 text-gray-800 font-bold">
-                                    <FaCheckSquare />
-                                    <h3>Subtasks</h3>
-                                </div>
-                                <span className="text-[10px] font-bold text-gray-400">{progress}%</span>
-                            </div>
-                            <div className="w-full h-1.5 bg-gray-100 rounded-full mb-4 overflow-hidden">
-                                <div className="h-full bg-indigo-500 transition-all duration-500" style={{ width: `${progress}%` }}></div>
-                            </div>
-                            <div className="space-y-1.5 mb-4">
-                                {localTask.subtasks?.map(s => (
-                                    <div key={s.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg group">
-                                        <input
-                                            type="checkbox"
-                                            checked={s.is_completed}
-                                            onChange={() => handleToggleSubtask(s.id, s.is_completed)}
-                                            className="w-4 h-4 rounded-md border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-                                        />
-                                        <span className={`flex-1 text-sm font-medium ${s.is_completed ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{s.title}</span>
-                                        <button onClick={() => handleDeleteSubtask(s.id)} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500"><FaTrash size={12} /></button>
-                                    </div>
-                                ))}
-                            </div>
-                            <form onSubmit={handleAddSubtask} className="flex gap-2 relative">
-                                <input
-                                    ref={subtaskInputRef}
-                                    type="text"
-                                    value={subtaskTitle}
-                                    onChange={handleSubtaskSearch}
-                                    placeholder="Add an item or use @ to assign..."
-                                    className="flex-1 bg-gray-50 border-none px-4 py-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-100 outline-none font-medium"
-                                />
-                                {showMentionResults && mentionContext === 'subtask' && (
-                                    <div className="absolute bottom-full mb-2 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
-                                        {projectMembers.filter(m => m.name.toLowerCase().includes(mentionSearch.toLowerCase())).map(member => (
-                                            <button key={member.id} onClick={() => insertMention(member)} className="w-full flex items-center gap-3 p-3 hover:bg-indigo-50 transition-colors text-left">
-                                                <img src={member.profile_image ? (member.profile_image.startsWith('http') ? member.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${member.profile_image}`) : `https://ui-avatars.com/api/?name=${member.name}`} className="w-8 h-8 rounded-full border border-gray-200" />
-                                                <div className="flex flex-col">
-                                                    <span className="text-sm font-bold text-gray-800">{member.name}</span>
-                                                    <span className="text-[10px] text-gray-400 uppercase">{member.designation}</span>
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                                <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition-colors">Add</button>
-                            </form>
-                        </div>
 
                         {/* Activity */}
                         <div className="space-y-4 pt-4 pb-8 border-t border-gray-50">
