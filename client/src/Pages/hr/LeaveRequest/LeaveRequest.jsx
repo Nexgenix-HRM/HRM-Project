@@ -23,7 +23,7 @@ const Leave = () => {
 
     const fetchLeaves = async () => {
         try {
-            const response = await leaveApi.getLeaves();
+            const response = await leaveApi.getMyLeaves();
             setLeaves(response.data);
         } catch (error) {
             console.error(error);

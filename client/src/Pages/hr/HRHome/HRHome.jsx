@@ -5,6 +5,7 @@ import NoticeAcknowledgment from '../../../components/NoticeAcknowledgment';
 import { hrApi } from '../../../Api/hrApi';
 import { monitoringApi } from '../../../Api/monitoringApi';
 import { leaveApi } from '../../../Api/leaveApi';
+import RecentNotifications from '../../../components/RecentNotifications';
 
 const HRHome = () => {
     const [data, setData] = useState({
@@ -48,7 +49,7 @@ const HRHome = () => {
     }, []);
 
     return (
-        <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+        <div className="p-4 lg:p-8 pb-16 max-w-6xl mx-auto">
 
             <header className="mb-6">
                 <div className="flex items-center gap-3">
@@ -106,9 +107,12 @@ const HRHome = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                {/* Recent Activity */}
+                <RecentNotifications />
+
                 {/* Recent Hires - Relatable Content */}
-                <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6">
+                <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6 overflow-hidden">
                     <div className="flex items-center gap-2 mb-4 border-b border-slate-50 pb-3">
                         <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
                             <FaUserPlus size={14} />
@@ -125,21 +129,21 @@ const HRHome = () => {
                                         {user.profile_image ? (
                                             <img
                                                 src={user.profile_image.startsWith('http') ? user.profile_image : `${import.meta.env.VITE_STORAGE_URL}/${user.profile_image}`}
-                                                className="w-9 h-9 rounded-xl object-cover border border-slate-200 shadow-sm"
+                                                className="w-9 h-9 rounded-xl object-cover border border-slate-200 shadow-sm shrink-0"
                                                 alt={user.name}
                                             />
                                         ) : (
-                                            <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-200">
+                                            <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-200 shrink-0">
                                                 {user.name.charAt(0)}
                                             </div>
                                         )}
-                                        <div>
-                                            <div className="text-xs font-bold text-slate-900">{user.name}</div>
-                                            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wide">{user.designation || user.role}</div>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="text-xs font-bold text-slate-900 truncate">{user.name}</div>
+                                            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wide truncate">{user.designation || user.role}</div>
                                         </div>
                                     </div>
-                                    <div className="text-[8px] font-black text-slate-300 group-hover:text-emerald-500 transition-colors uppercase">
-                                        Joined {new Date(user.created_at).toLocaleDateString()}
+                                    <div className="text-[8px] font-black text-slate-300 group-hover:text-emerald-500 transition-colors uppercase ml-2 whitespace-nowrap">
+                                        {new Date(user.created_at).toLocaleDateString()}
                                     </div>
                                 </div>
                             ))

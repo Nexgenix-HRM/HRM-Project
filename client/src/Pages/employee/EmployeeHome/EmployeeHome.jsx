@@ -8,6 +8,7 @@ import {
 import { employeeApi } from '../../../Api/employeeApi';
 import { noticeApi } from '../../../Api/noticeApi';
 import NoticeAcknowledgment from '../../../components/NoticeAcknowledgment';
+import RecentNotifications from '../../../components/RecentNotifications';
 
 const EmployeeHome = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -53,7 +54,7 @@ const EmployeeHome = () => {
     );
 
     return (
-        <div className="p-4 lg:p-8 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-700">
+        <div className="p-4 lg:p-8 pb-16 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-700">
             {/* Header Section */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-2">
@@ -96,37 +97,42 @@ const EmployeeHome = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <div className="lg:col-span-2 space-y-4">
-                    <div className="flex items-center justify-between px-2">
-                        <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <FaBullhorn className="text-accent" /> Recent Announcements
-                        </h3>
-                        <Link to="/dashboard/employee/notices" className="text-xs font-bold text-accent hover:underline">View Intelligence Archive</Link>
+                <div className="lg:col-span-2 space-y-8">
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <FaBullhorn className="text-accent" /> Recent Announcements
+                            </h3>
+                            <Link to="/dashboard/employee/notices" className="text-xs font-bold text-accent hover:underline">View Intelligence Archive</Link>
+                        </div>
+
+                        <div className="space-y-3">
+                            {notices.map(notice => (
+                                <div key={notice.id} className="bg-white/60 backdrop-blur-sm border border-slate-100 p-5 rounded-2xl hover:bg-white transition-all shadow-sm group">
+                                    <div className="flex items-start justify-between">
+                                        <div className="space-y-1">
+                                            <h5 className="font-bold text-slate-900 group-hover:text-accent transition-colors">{notice.title}</h5>
+                                            <p className="text-sm text-slate-500 line-clamp-1">{notice.content}</p>
+                                            <div className="flex items-center gap-3 pt-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                                <span>{new Date(notice.created_at).toLocaleDateString()}</span>
+                                                <span>•</span>
+                                                <span>By {notice.creator?.name}</span>
+                                            </div>
+                                        </div>
+                                        <FaChevronRight size={12} className="text-slate-200 mt-2" />
+                                    </div>
+                                </div>
+                            ))}
+                            {notices.length === 0 && (
+                                <div className="p-8 text-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                                    <p className="text-sm text-slate-400 font-bold">No active announcements discovered.</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="space-y-3">
-                        {notices.map(notice => (
-                            <div key={notice.id} className="bg-white/60 backdrop-blur-sm border border-slate-100 p-5 rounded-2xl hover:bg-white transition-all shadow-sm group">
-                                <div className="flex items-start justify-between">
-                                    <div className="space-y-1">
-                                        <h5 className="font-bold text-slate-900 group-hover:text-accent transition-colors">{notice.title}</h5>
-                                        <p className="text-sm text-slate-500 line-clamp-1">{notice.content}</p>
-                                        <div className="flex items-center gap-3 pt-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                                            <span>{new Date(notice.created_at).toLocaleDateString()}</span>
-                                            <span>•</span>
-                                            <span>By {notice.creator?.name}</span>
-                                        </div>
-                                    </div>
-                                    <FaChevronRight size={12} className="text-slate-200 mt-2" />
-                                </div>
-                            </div>
-                        ))}
-                        {notices.length === 0 && (
-                            <div className="p-8 text-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                                <p className="text-sm text-slate-400 font-bold">No active announcements discovered.</p>
-                            </div>
-                        )}
-                    </div>
+                    {/* Recent Activity Section */}
+                    <RecentNotifications />
                 </div>
 
                 {/* Quick Access Sidebar */}
