@@ -11,7 +11,7 @@ php artisan cache:clear
 
 # Run migrations and seed
 echo "Running migrations and seeding..."
-php artisan migrate --seed --force
+php artisan migrate:fresh --seed --force
 
 # Create storage link
 echo "Creating storage link..."
