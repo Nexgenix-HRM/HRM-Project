@@ -1,8 +1,60 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaCalendarCheck, FaBriefcase, FaArrowRight, FaChartPie } from 'react-icons/fa';
+import { FaUsers, FaCalendarCheck, FaBriefcase, FaArrowRight, FaChartPie, FaUserPlus, FaPlaneDeparture, FaUserClock } from 'react-icons/fa';
 import NoticeAcknowledgment from '../../../components/NoticeAcknowledgment';
+import { hrApi } from '../../../Api/hrApi';
+import { monitoringApi } from '../../../Api/monitoringApi';
+import { leaveApi } from '../../../Api/leaveApi';
 
 const HRHome = () => {
+    const [data, setData] = useState({
+        totalWorkforce: 0,
+        presentToday: 0,
+        pendingLeaves: 0,
+        recentHires: [],
+        whosOut: [],
+        loading: true
+    });
+
+    useEffect(() => {
+        const fetchHRData = async () => {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const [usersRes, leavesRes, overviewRes] = await Promise.all([
+                    hrApi.getUsers(),
+                    leaveApi.getLeaves(),
+                    monitoringApi.getOverview({ date: today })
+                ]);
+
+                // Filter out CEO
+                const filteredUsers = usersRes.data.filter(u => u.role !== 'ceo');
+
+                // Sort and get last 3 registered users as "Recent Hires"
+                const sortedUsers = [...filteredUsers].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3);
+
+                // Get employees with approved leave for today
+                const outToday = leavesRes.data.filter(l => {
+                    if (l.status !== 'approved') return false;
+                    return today >= l.start_date && today <= l.end_date;
+                });
+
+                setData({
+                    totalWorkforce: filteredUsers.length,
+                    presentToday: overviewRes.data?.summary?.attendance?.present || 0,
+                    pendingLeaves: leavesRes.data.filter(l => l.status === 'pending').length,
+                    recentHires: sortedUsers,
+                    whosOut: outToday,
+                    loading: false
+                });
+            } catch (error) {
+                console.error("Error fetching HR dashboard data:", error);
+                setData(prev => ({ ...prev, loading: false }));
+            }
+        };
+
+        fetchHRData();
+    }, []);
+
     return (
         <div className="p-4 lg:p-8 max-w-6xl mx-auto">
 
@@ -26,8 +78,10 @@ const HRHome = () => {
                         <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center mb-4">
                             <FaUsers size={16} />
                         </div>
-                        <h6 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Workforce Count</h6>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter">--</h2>
+                        <h6 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Employees</h6>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter">
+                            {data.loading ? "..." : data.totalWorkforce}
+                        </h2>
                     </div>
                 </div>
 
@@ -38,8 +92,10 @@ const HRHome = () => {
                         <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4">
                             <FaCalendarCheck size={16} />
                         </div>
-                        <h6 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Daily Presence</h6>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter">--</h2>
+                        <h6 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Present Today</h6>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter">
+                            {data.loading ? "..." : data.presentToday}
+                        </h2>
                     </div>
                 </div>
 
@@ -48,10 +104,84 @@ const HRHome = () => {
                     <div className="absolute top-0 right-0 w-20 h-20 bg-accent/20 rounded-full -mr-10 -mt-10"></div>
                     <div className="relative z-10">
                         <div className="w-10 h-10 bg-accent text-white rounded-lg flex items-center justify-center mb-4 shadow-sm">
-                            <FaChartPie size={16} />
+                            <FaUserClock size={16} />
                         </div>
-                        <h6 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Resource Meta</h6>
-                        <h2 className="text-2xl font-black text-white tracking-tighter">Active</h2>
+                        <h6 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Queue Status</h6>
+                        <h2 className="text-2xl font-black text-white tracking-tighter">
+                            {data.loading ? "..." : `${data.pendingLeaves} Pending`}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                {/* Recent Hires - Relatable Content */}
+                <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6">
+                    <div className="flex items-center gap-2 mb-4 border-b border-slate-50 pb-3">
+                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                            <FaUserPlus size={14} />
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Recent Onboardings</h3>
+                    </div>
+                    <div className="space-y-4">
+                        {data.loading ? (
+                            <div className="text-[10px] text-slate-400 font-bold uppercase py-2">Loading profiles...</div>
+                        ) : data.recentHires.length > 0 ? (
+                            data.recentHires.map(user => (
+                                <div key={user.id} className="flex items-center justify-between group">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-200">
+                                            {user.name.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <div className="text-xs font-bold text-slate-900">{user.name}</div>
+                                            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wide">{user.designation || user.role}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-[8px] font-black text-slate-300 group-hover:text-emerald-500 transition-colors uppercase">
+                                        Joined {new Date(user.created_at).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-[10px] text-slate-400 font-bold uppercase py-2">No recent hires found</div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Who's Out Today - Functional Content */}
+                <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-6">
+                    <div className="flex items-center gap-2 mb-4 border-b border-slate-50 pb-3">
+                        <div className="p-2 bg-rose-50 text-rose-600 rounded-lg">
+                            <FaPlaneDeparture size={14} />
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Out of Office</h3>
+                    </div>
+                    <div className="space-y-4">
+                        {data.loading ? (
+                            <div className="text-[10px] text-slate-400 font-bold uppercase py-2">Scanning registry...</div>
+                        ) : data.whosOut.length > 0 ? (
+                            data.whosOut.map(l => (
+                                <div key={l.id} className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center font-bold text-xs border border-rose-100">
+                                            {l.name ? l.name.charAt(0) : 'E'}
+                                        </div>
+                                        <div>
+                                            <div className="text-xs font-bold text-slate-900">{l.name || 'Anonymous'}</div>
+                                            <div className="text-[9px] text-rose-400 font-bold uppercase tracking-wide">On Approved Leave</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-[9px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
+                                        Starts {l.start_date}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="h-full flex flex-col items-center justify-center py-6">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">All Personnel Present</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -72,7 +202,7 @@ const HRHome = () => {
                         <Link to="/dashboard/hr/directory" className="h-10 px-6 bg-slate-900 text-white rounded-xl text-[10px] font-bold hover:bg-black transition-all flex items-center gap-2">
                             Directory <FaArrowRight size={9} />
                         </Link>
-                        <Link to="/dashboard/hr/leave" className="h-10 px-6 bg-white border border-slate-200 text-slate-900 rounded-xl text-[10px] font-bold hover:bg-slate-50 transition-all flex items-center gap-2">
+                        <Link to="/dashboard/hr/leave-request" className="h-10 px-6 bg-white border border-slate-200 text-slate-900 rounded-xl text-[10px] font-bold hover:bg-slate-50 transition-all flex items-center gap-2">
                             Leaves <FaArrowRight size={9} />
                         </Link>
                     </div>

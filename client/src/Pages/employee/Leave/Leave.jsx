@@ -8,6 +8,9 @@ import { leaveApi } from '../../../Api/leaveApi';
 
 const Leave = () => {
     const [leaves, setLeaves] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 10;
+
     const [formData, setFormData] = useState({
         start_date: '',
         end_date: '',
@@ -63,7 +66,6 @@ const Leave = () => {
             setSuccessMessage('Leave request submitted successfully');
             setFormData({ start_date: '', end_date: '', reason: '', document: null });
 
-            // Fetch in background, success message is already shown
             fetchLeaves();
 
             setTimeout(() => setSuccessMessage(''), 5000);
@@ -91,6 +93,16 @@ const Leave = () => {
         }
     };
 
+    // Pagination Logic
+    const totalPages = Math.ceil(leaves.length / recordsPerPage);
+    const paginatedLeaves = leaves.slice(
+        (currentPage - 1) * recordsPerPage,
+        currentPage * recordsPerPage
+    );
+
+    const handlePrevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+    const handleNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+
     if (loading) return (
         <div className="flex items-center justify-center min-h-[400px]">
             <div className="flex gap-2">
@@ -116,10 +128,8 @@ const Leave = () => {
 
     return (
         <div className="min-h-screen p-4 lg:p-8 relative overflow-hidden">
-
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03]" style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '24px 24px' }}></div>
 
-            {/* Header Section */}
             <header className="max-w-7xl mx-auto mb-6 relative z-10">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
@@ -157,8 +167,6 @@ const Leave = () => {
             </div>
 
             <div className={`max-w-7xl mx-auto grid grid-cols-1 ${userRole === 'employee' ? 'xl:grid-cols-12' : ''} gap-6 lg:gap-8 relative z-10`}>
-
-
                 {userRole === 'employee' && (
                     <div className="xl:col-span-5">
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/50 p-6 lg:p-8 xl:sticky xl:top-8">
@@ -168,11 +176,7 @@ const Leave = () => {
                                     <FaCalendarPlus size={16} />
                                 </div>
                             </div>
-
-
-
                             <form onSubmit={handleSubmit} className="space-y-6">
-
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-1 group">
                                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Start Date</label>
@@ -203,8 +207,6 @@ const Leave = () => {
                                         </div>
                                     </div>
                                 </div>
-
-
                                 <div className="space-y-1 group">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Reason for Absence</label>
                                     <textarea
@@ -217,8 +219,6 @@ const Leave = () => {
                                         placeholder="Briefly explain your request..."
                                     />
                                 </div>
-
-                                {/* Document Upload */}
                                 <div className="space-y-1 group">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Documents (Optional)</label>
                                     <label className="relative flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50/50 hover:border-slate-400 transition-all group/upload bg-slate-50/30">
@@ -237,7 +237,6 @@ const Leave = () => {
                                         />
                                     </label>
                                 </div>
-
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
@@ -257,16 +256,15 @@ const Leave = () => {
                     </div>
                 )}
 
-
                 <div className={userRole === 'employee' ? 'xl:col-span-7' : 'w-full max-w-5xl mx-auto'}>
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200/50 overflow-hidden">
                         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                             <div>
                                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                                     <FaHistory className="text-slate-300" size={16} />
-                                    {userRole === 'employee' ? 'Latest 10 Requests' : 'Latest 10 Applications'}
+                                    {userRole === 'employee' ? 'Latest Applications' : 'Leave Management'}
                                 </h3>
-                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">{leaves.length} Total</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">{leaves.length} Total Applications</p>
                             </div>
                         </div>
 
@@ -282,7 +280,7 @@ const Leave = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50/50">
-                                    {leaves.map(leave => (
+                                    {paginatedLeaves.map(leave => (
                                         <tr key={leave.id} className="group hover:bg-slate-50/50 transition-all">
                                             {userRole !== 'employee' && (
                                                 <td className="py-3 px-4">
@@ -375,6 +373,31 @@ const Leave = () => {
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="p-6 border-t border-slate-100 flex items-center justify-between bg-slate-50/30">
+                                <button
+                                    onClick={handlePrevPage}
+                                    disabled={currentPage === 1}
+                                    className="h-9 px-4 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 shadow-sm"
+                                >
+                                    <FaChevronRight size={10} className="rotate-180" /> Previous
+                                </button>
+
+                                <div className="text-[11px] font-black text-slate-900 tracking-tight flex items-center gap-1.5">
+                                    <span className="text-accent underline decoration-2 underline-offset-4">👉 Page {currentPage} of {totalPages}</span>
+                                </div>
+
+                                <button
+                                    onClick={handleNextPage}
+                                    disabled={currentPage === totalPages}
+                                    className="h-9 px-4 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 shadow-sm"
+                                >
+                                    Next <FaChevronRight size={10} />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

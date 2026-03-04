@@ -40,11 +40,23 @@ class MonitoringController extends Controller
         
         // Summary stats - always based on total for the day, not the filtered list
         $allEmployees = User::whereIn('role', ['employee', 'hr'])->get();
+        $employeeIds = $allEmployees->pluck('id')->toArray();
         $employeeCount = $allEmployees->count();
 
-        $attendance = Attendance::where('date', $date)->get()->keyBy('user_id');
-        $activities = DailyActivity::where('date', $date)->get()->groupBy('user_id');
-        $todos = Todo::where('date', $date)->get()->keyBy('user_id');
+        $attendance = Attendance::where('date', $date)
+            ->whereIn('user_id', $employeeIds)
+            ->get()
+            ->keyBy('user_id');
+            
+        $activities = DailyActivity::where('date', $date)
+            ->whereIn('user_id', $employeeIds)
+            ->get()
+            ->groupBy('user_id');
+            
+        $todos = Todo::where('date', $date)
+            ->whereIn('user_id', $employeeIds)
+            ->get()
+            ->keyBy('user_id');
 
         return response()->json([
             'date' => $date,
