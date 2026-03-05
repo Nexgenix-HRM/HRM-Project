@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\LeaveRequest;
 
-class LeaveStatusUpdated extends Notification
+class LeaveStatusUpdated extends Notification implements ShouldQueue
 {
     use Queueable;
 

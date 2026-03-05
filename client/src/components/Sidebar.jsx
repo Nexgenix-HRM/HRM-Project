@@ -51,7 +51,7 @@ const Sidebar = ({ isMobile, isOpen, onClose }) => {
             { path: '/dashboard/ceo/projects', icon: FaColumns, label: 'Projects' },
             { path: '/dashboard/ceo/users', icon: FaUsersCog, label: 'User Management' },
             { path: '/dashboard/ceo/notices-manage', icon: FaLayerGroup, label: 'Notice Management' },
-            { path: '/dashboard/ceo/leave', icon: FaCalendarTimes, label: 'Leave Requests' },
+            { path: '/dashboard/ceo/leave', icon: FaCalendarTimes, label: 'Leave Management' },
             { path: '/dashboard/ceo/directory', icon: FaUser, label: 'Team Directory' },
             { path: '/dashboard/ceo/monitoring', icon: FaChartBar, label: 'Monitoring' },
             { path: 'https://aspirementor.thenexgenix.com', icon: FaChalkboardTeacher, label: 'Mentor', external: true },

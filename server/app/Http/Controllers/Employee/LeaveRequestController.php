@@ -82,15 +82,11 @@ class LeaveRequestController extends Controller
             'status' => 'pending',
         ]);
 
-        // Notify managers via database (for dashboard visibility) and send email
+        // Notify managers via database (for dashboard visibility)
         try {
             $leave->load('user');
             $managers = \App\Models\User::whereIn('role', ['hr', 'ceo'])->get();
             \Illuminate\Support\Facades\Notification::send($managers, new \App\Notifications\LeaveRequestSubmitted($leave, ['database']));
-
-            // Send email ONLY to the designated address
-            \Illuminate\Support\Facades\Notification::route('mail', 'mdmonir7458596@gmail.com')
-                ->notify(new \App\Notifications\LeaveRequestSubmitted($leave, ['mail']));
         } catch (\Exception $e) {
             \Log::error("Failed to send leave submission notification: " . $e->getMessage());
         }
