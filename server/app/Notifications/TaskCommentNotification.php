@@ -40,7 +40,7 @@ class TaskCommentNotification extends Notification
     {
         return [
             'type' => 'task_comment',
-            'message' => "New comment on task: {$this->comment->task->title}",
+            'message' => "{$this->comment->user->name} commented on task '{$this->comment->task->title}' in project '{$this->comment->task->project->name}'",
             'task_id' => $this->comment->task_id,
             'comment_id' => $this->comment->id,
             'user' => $this->comment->user->name,
